@@ -3,5 +3,8 @@ extends layout
 block content
     include navbar.pug
 
+    - var userlist = [{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: false, isRead: true, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."}];
+
+    include userlist.pug
 
 

@@ -1,0 +1,32 @@
+.userlist
+    each user in userlist
+        .user
+            .user_pic-container
+                img(src="/images/propics/"+user.userId+".jpg", alt=user.name)
+
+            .user_info-container
+                if user.isRead
+                    span.user_name= user.name
+                        if user.isActive
+                            span.is-active_indicator
+                else
+                    span.user_name.not_read_msg= user.name
+                        if user.isActive
+                            span.is-active_indicator
+                    
+                if user.isRead
+                    span.user_msg= user.lastMsg 
+                else
+                    span.user_msg.not_read_msg= user.lastMsg   
+
+            .user_confirmation-time-container
+                if user.isSeen
+                    span
+                        img.seen_indicator(src="/images/icons/seen.svg")
+                else
+                    span
+                        img.not-seen_indicator(src="/images/icons/not_seen.svg")
+                
+                span.msg_time 
+                    span.circle
+                    = user.lastMsgTime
