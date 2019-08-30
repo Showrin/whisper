@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    img.bg-container_img(src="/images/background/bg.jpg")
+
+    .bg-container
+      .bg-container_logo-div
+          img.bg-container_white-logo(src="/images/icons/logo-white.svg")
+
+      .bg-container_login-div
+          h1.login-form_title Sign In
+
+          label Email
+          input#email(type='email', name='email', autocomplete='off', autocorrect="off", autocapitalize="off" spellcheck="false", required)
+          span.form-error-msg 
+
+          label Password
+          input#password(type='password', name='password', required)
+
+          button Sign In
+          span.form-navigate-msg Don't Have an Account? Please 
+              a.form-navigate-msg_link(href="/signup") Sign Up
+
+
+

@@ -1,3 +1,20 @@
+// ######### Variables ##########
+$primary-color: #FD8187;
+$secondary-color: #E66AAE;
+$black-color: #515151;
+$gray-color: #AAAAAA;
+$lighter-gray-color: #F2F2F2;
+$lightest-gray-color: #E5E5E5;
+$green-color: #20BF6B;
+$lighter-green-color: #26DE81;   
+$red-color: #FC5F67;
+$lighter-red-color: #FFE9EA;
+$orange-color: #FE9B75;
+
+$shadow: 0px 3px 6px rgba(0, 0, 0, .16);
+
+
+// ######### Custom Fonts ##########
 @font-face {
     src: url('../../fonts/Muli.ttf');
     font-style: normal;
@@ -10,11 +27,229 @@
     font-family: 'muli-bold';
 }
 
+// ######### Global Config ##########
 body {
-    padding: 50px;
-    font: 14px "muli-regular";
-  }
-  
-  a {
-    color: #00B7FF;
-  }
+    padding: 0;
+    margin: 0;
+    font-size: 1vw;
+    font-family: "muli-regular";
+    color: $black-color;
+}
+
+button {
+    color: $primary-color;
+    padding: .8vw 5vw .8vw  5vw;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-top: 2.5vw;
+    margin-bottom: .5vw;
+    box-shadow: $shadow;
+    cursor: pointer;
+    transition: transform .2s ease-in-out;
+}
+button:hover {
+    transform: scale(1.05);
+}
+button:active {
+    transform: translateY(1px);
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+h1 {
+    margin: 0;
+}
+
+input {
+    outline: none;
+    border: 2px solid #fff;
+    border-radius: 6px;
+    background-color: transparent;
+    box-sizing: border-box;
+    width: 100%;
+    height: 3vw;
+    padding: 1vw;
+    color: #fff;
+    font-size: 1.2vw;
+}
+
+label {
+    font-size: 1.1vw;
+    margin-bottom: .5vw;
+    margin-right: auto;
+    margin-top: 1.5vw;
+}
+
+.form-error-msg {
+    font-size: .8vw;
+    margin-right: auto;
+    margin-top: .2vw;
+}
+
+//profile pic input config
+.login-form_img {
+    width: 6vw;
+    height: 6vw;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: $shadow;
+    margin-top: 1.5vw;
+
+    input {
+        display: none;
+    }
+
+    img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    #img_overlay {
+        position: absolute;
+        border-radius: 50%;
+        margin-top: 0;
+        margin-bottom: 0;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+        background-color: #000000;
+        transition: .2s ease-in-out;
+        text-align: center;
+        cursor: pointer;
+
+        img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2vw;
+            height: auto;
+            z-index: 10;
+        }
+    }
+}
+.login-form_img:hover {
+    
+    #img_overlay {
+        opacity: .65;
+    }
+}
+
+.icon-container {
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+}
+.icon-container:hover {
+    transform: scale(1.1);
+    background-color: $lighter-red-color;
+}
+.icon-container_icon {
+    height: 1.2vw;
+    width: 1.2vw;
+}
+
+
+// ######### signin and signup page config ##########
+.bg-container_img {
+    position: fixed;
+    width: 100%;
+    min-height: 100vh;
+    object-fit: cover;
+}
+
+.bg-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(230,106,174,0.9) 0%, rgba(253,129,135,0.9) 100%);
+    display: flex;
+    flex-direction: row;
+}
+
+.bg-container_logo-div, .bg-container_login-div {
+    display: flex;
+    box-sizing: border-box;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-container_login-div {
+    flex-direction: column;
+    color: #fff;
+    padding: 0px 10% 0px 10%;
+}
+
+.bg-container_white-logo {
+    width: 60%;
+    height: auto;;
+}
+
+.form-navigate-msg {
+    font-size: .8vw;
+
+    .form-navigate-msg_link {
+        font-size: 1vw;
+        font-family: 'muli-bold';
+    }
+}
+
+
+// ######### index page config ##########
+.navbar {
+    width: 100%;
+    height: 4.5vw;
+    background-color: #fff;
+    box-shadow: $shadow;
+    display: flex;
+}
+
+.navbar_userlist-portion,
+.navbar_chatbox-portion {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 1.5vw;
+}
+
+.navbar_userlist-portion {
+    width: 22%;
+    height: inherit;
+    border-right: 1px solid $lightest-gray-color;
+}
+
+.navbar_chatbox-portion {
+    height: inherit;
+    width: 78%;
+    justify-content: flex-end;
+}
+
+.navbar_logo {
+    width: 35%;
+    height: auto;
+    margin-right: auto;
+}
+
+.left-gap {
+    margin-left: 1vw;
+}
+
+

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="shortcut icon" type="images/x-icon" href="/images/favicon/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/css/style.css">
+    <script src="/javascripts/jquery-3.4.1.min.js"></script>
+  </head>
+  <body><img class="bg-container_img" src="/images/background/bg.jpg">
+    <div class="bg-container">
+      <div class="bg-container_logo-div"><img class="bg-container_white-logo" src="/images/icons/logo-white.svg"></div>
+      <div class="bg-container_login-div">
+        <h1 class="login-form_title">Sign Up</h1>
+        <div class="login-form_img">
+          <input id="js_pro_pic" type="file" accept="image/" name="pro-pic" onchange="showIMG(this);" required><img id="js_show_pro_pic" src="/images/icons/user.svg">
+          <label id="img_overlay" for="js_pro_pic"><img src="/images/icons/camera.svg"></label>
+        </div>
+        <label>User Name <span class="form-error-msg">(It will be showed to all users)</span></label>
+        <input id="email" type="name" name="name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required><span class="form-error-msg"> </span>
+        <label>Email</label>
+        <input id="email" type="email" name="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required><span class="form-error-msg"> </span>
+        <label>Password</label>
+        <input id="password" type="password" name="password" required><span class="form-error-msg"> </span>
+        <button>Sign Up</button><span class="form-navigate-msg">Have an Account? Please <a class="form-navigate-msg_link" href="/signin">Sign In</a></span>
+      </div>
+    </div>
+    <script src="../javascripts/login_script.js"></script>
+  </body>
+</html>
