@@ -1,0 +1,20 @@
+@font-face {
+    src: url('../../fonts/Muli.ttf');
+    font-style: normal;
+    font-family: 'muli-regular';
+}
+
+@font-face {
+    src: url('../../fonts/Muli-Bold.ttf');
+    font-style: normal;
+    font-family: 'muli-bold';
+}
+
+body {
+    padding: 50px;
+    font: 14px "muli-regular";
+  }
+  
+  a {
+    color: #00B7FF;
+  }
