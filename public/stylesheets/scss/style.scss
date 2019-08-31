@@ -38,6 +38,7 @@ body {
     font-size: 1vw;
     font-family: "muli-regular";
     color: $black-color;
+    z-index: -10000;
 }
 
 button {
@@ -79,6 +80,17 @@ input {
     height: 3vw;
     padding: 1vw;
     color: #fff;
+    font-size: 1.2vw;
+}
+
+input.solid-input {
+    background-color: $very-lightgray-color;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 3vw;
+    padding: 1vw;
+    color: $black-color;
     font-size: 1.2vw;
 }
 
@@ -374,6 +386,116 @@ label {
     background-color: $gray-color;
     margin-right: .2vw;
 }
+
+
+// ######### index page chatbox config ##########
+.chatbox {
+    height: auto;
+    background-color: #fff;
+    position: absolute;
+    top: 4.5vw;
+    bottom: 4vw;
+    right: 0;
+    left: 24%;
+    padding: 1vw .82vw 0 .82vw;
+    border-right: 1px solid $lightest-gray-color; 
+    overflow: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: -10;
+    overflow: hidden;
+    overflow-y: scroll;
+    font-size: .9vw;
+}
+
+.chatbox_msgbox {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: .2vw 0px;
+}
+.chatbox_msgbox:hover {
+    .frnds_msg-icon-container,
+    .own_msg-icon-container {
+        transform: scale(1);
+    }
+}
+.own_msgbox {
+    flex-direction: row-reverse;
+    
+    .seen_indicator,
+    .not-seen_indicator {
+        margin-left: 1vw;
+    }
+
+    // for aligning seen/not seen indicator
+    span {
+        align-self: flex-end;
+    }
+}
+.frnds_msgbox {
+    flex-direction: row;
+}
+
+.chatbox_msg {
+    padding: .5vw 1.5vw;
+    max-width: 60%;
+}
+.own_msg {
+    background-color: $primary-color;
+    color: #fff;
+    margin-left: 2vw;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+.frnds_msg {
+    background-color: $lighter-gray-color;
+    color: $black-color;
+    margin-right: 2vw;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.chatbox_msg-time {
+    align-self: flex-end;
+    font-size: .7vw;
+    color: $gray-color;
+}
+
+.frnds_msg-icon-container,
+.own_msg-icon-container {
+    transform: scale(0);
+}
+.frnds_msg-icon-container {
+    margin-left: auto;
+}
+.own_msg-icon-container {
+    margin-right: auto;
+}
+
+.chatbox_sendmsg-form {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 24%;
+    padding: .2vw .82vw .2vw .82vw;
+    height: 3.5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    background-color: #fff;
+}
+
+.chatbox_sendmsg-input {
+    width: 95% !important;
+    font-size: .9vw !important;
+    border-radius: 30px;
+    height: 2.5vw !important;
+}
+
 
 // ######### Scrollbar modification #############
 /* width */
