@@ -70,6 +70,12 @@ h1 {
     margin: 0;
 }
 
+.divider {
+    width: 100%;
+    background-color: $lightest-gray-color;
+    padding-bottom: 1px;
+}
+
 input {
     outline: none;
     border: 2px solid #fff;
@@ -172,8 +178,8 @@ label {
     transition: all .1s ease-in-out;
 }
 .icon-container:hover {
-    transform: scale(1.1);
-    background-color: $lighter-red-color;
+    transform: scale(1.1) !important;
+    background-color: $lighter-red-color !important;
 }
 .icon-container_icon {
     height: 1.2vw;
@@ -328,7 +334,7 @@ label {
     transition: transform .2s ease-in-out;
 }
 .user:active {
-    transform: translateY(1px);
+    transform: translateY(2px);
 }
 
 .user.active {
@@ -423,7 +429,7 @@ label {
     background-color: #fff;
     position: absolute;
     top: 4.5vw;
-    bottom: 4vw;
+    bottom: 3.8vw;
     right: 0;
     left: 24%;
     padding: 1vw .82vw 0 .82vw;
@@ -434,9 +440,8 @@ label {
     flex-direction: column;
     align-items: flex-start;
     z-index: -10;
-    overflow: hidden;
-    overflow-y: scroll;
     font-size: .9vw;
+    transition: all .2s ease-in-out;
 }
 
 .chatbox_msgbox {
@@ -515,11 +520,13 @@ label {
     left: 24%;
     padding: .2vw .82vw .2vw .82vw;
     height: 3.5vw;
+    border-right: 1px solid $lightest-gray-color; 
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
     background-color: #fff;
+    transition: all .2s ease-in-out;
 }
 
 .chatbox_sendmsg-input {
@@ -527,6 +534,100 @@ label {
     font-size: .9vw !important;
     border-radius: 30px;
     height: 2.5vw !important;
+}
+
+
+// ######### index page info config ##########
+.infobox {
+    height: auto;
+    background-color: #fff;
+    position: absolute;
+    top: 4.5vw;
+    bottom: 0;
+    right: 0;
+    width: 22.3%;
+    padding: 1vw .82vw 0 .82vw;
+    overflow: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: -15;
+    font-size: .8vw;
+    transition: all .2s ease-in-out;
+
+    .user_pic-container {
+        width: 8vw;
+        height: 8vw;
+        margin-top: 3vw;
+
+        img {
+            width: inherit;
+            height: inherit;
+        }
+    }
+
+    .user_name {
+        height: 3vw;
+        text-align: center;
+        font-family: 'muli-bold';
+        font-size: 1.5vw;
+        line-height: initial !important;
+        padding-top: 1vw;
+        padding-bottom: 4.5vw;
+    }
+}
+
+.infobox_title {
+    font-family: 'muli-bold';
+    font-size: 1.1vw;
+    color: $gray-color;
+    width: 100%;
+    padding: .5vw;
+}
+
+.infobox_option {
+    font-size: .9vw;
+    color: $black-color;
+    width: 100%;
+    padding: .5vw;
+    box-sizing: border-box;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    transition: all .22s ease-in-out;
+
+    .icon-container {
+        margin-left: auto;
+    }
+}
+.infobox_option:hover {
+    background-color: $very-lightgray-color;
+}
+.infobox_option:active {
+    transform: scale(.99)
+}
+
+.top-margin {
+    margin-top: 3vw;
+}
+
+.link {
+    background-color: $very-lightgray-color;
+    padding: 1vw .2vw;
+    color: $primary-color;
+    margin-bottom: 1vw;
+
+    span {
+        text-align: center;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 

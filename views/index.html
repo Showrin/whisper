@@ -22,7 +22,7 @@
         </div>
         <div class="icon-container left-gap"><img class="icon-container_icon" src="/images/icons/call.svg"></div>
         <div class="icon-container left-gap"><img class="icon-container_icon" src="/images/icons/video.svg"></div>
-        <div class="icon-container left-gap"><img class="icon-container_icon" src="/images/icons/info.svg"></div>
+        <div class="icon-container left-gap" id="js_user_info_btn" data-active="0"><img class="icon-container_icon" src="/images/icons/info.svg"></div>
         <div class="icon-container left-gap"><img class="icon-container_icon" src="/images/icons/power.svg"></div>
       </div>
     </div>
@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <div class="chatbox">
+    <div class="chatbox" id="js_chatbox">
           <div class="chatbox_msgbox own_msgbox"><span><img class="seen_indicator" src="/images/icons/seen.svg"></span>
             <div class="chatbox_msg own_msg">hi... How are you??? hi... How are you??? hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???hi... How are you???</div>
             <div class="chatbox_msg-time">12.05am</div>
@@ -238,9 +238,22 @@
             <div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div>
           </div>
     </div>
-    <div class="chatbox_sendmsg-form">
+    <div class="chatbox_sendmsg-form" id="js_chatbox_sendmsg-form">
       <input class="chatbox_sendmsg-input solid-input" type="text" name="msg">
       <div class="icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/paper-plane.svg"></div>
+    </div>
+    <div class="infobox">
+      <div class="user_pic-container"><img src="/images/propics/1.jpg" alt="Nafisa Tasneem"></div><span class="user_name">Nafisa Tasneem</span>
+      <div class="divider"></div>
+      <div class="infobox_title">Privacy</div>
+      <div class="infobox_option"> <span>Block Person</span>
+        <div class="icon-container"><img class="icon-container_icon" src="/images/icons/do-not-disturb-rounded-sign.svg"></div>
+      </div>
+      <div class="infobox_option"> <span>Clear Chat</span>
+        <div class="icon-container"><img class="icon-container_icon" src="/images/icons/garbage.svg"></div>
+      </div>
+      <div class="divider top-margin"></div>
+      <div class="infobox_title">Links</div><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a><a class="infobox_option link" href=""> <span>Block Person</span></a>
     </div>
     <script src="/javascripts/chat_script.js"></script>
   </body>
