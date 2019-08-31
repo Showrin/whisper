@@ -1,6 +1,6 @@
 .userlist
-    each user in userlist
-        .user
+    each user, index in userlist
+        .user(class= index==0?'active':'', data-userId=user.userId, data-name=user.name, data-is-active='"' + user.isActive + '"')
             .user_pic-container
                 img(src="/images/propics/"+user.userId+".jpg", alt=user.name)
 
@@ -15,9 +15,15 @@
                             span.is-active_indicator
                     
                 if user.isRead
-                    span.user_msg= user.lastMsg 
+                    if user.lastMsgIsYours
+                        span.user_msg= "You: " + user.lastMsg 
+                    else
+                        span.user_msg= user.lastMsg 
                 else
-                    span.user_msg.not_read_msg= user.lastMsg   
+                    if user.lastMsgIsYours
+                        span.user_msg.not_read_msg= "You: " + user.lastMsg 
+                    else
+                        span.user_msg.not_read_msg= user.lastMsg  
 
             .user_confirmation-time-container
                 if user.isSeen

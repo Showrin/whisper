@@ -6,6 +6,14 @@
             img.icon-container_icon(src="/images/icons/gear.svg")
 
     .navbar_chatbox-portion
+        .navbar_chatbox-portion_user-details
+            .user_pic-container
+                img#js_navbar_profile_pic(src=picSrcOfWhomToChat, alt=nameOfWhomToChat)
+            .user_info-container
+                span#js_navbar_profile_name.user_name= nameOfWhomToChat
+                if isActive
+                    span#js_navbar_active_status.is-active_status Active Now
+
         .icon-container.left-gap
             img.icon-container_icon(src="/images/icons/call.svg")
         .icon-container.left-gap

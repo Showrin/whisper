@@ -270,6 +270,31 @@ label {
     margin-left: 1vw;
 }
 
+.navbar_chatbox-portion_user-details {
+    margin-right: auto;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .user_info-container {
+        flex-direction: column;
+        color: $black-color;
+        width: 100%;
+        padding-left: 1vw;
+
+        .user_name {
+            font-family: 'muli-bold';
+            padding-bottom: .2vw;
+        }
+
+        .is-active_status {
+            color: $gray-color;
+            font-size: .8vw;
+        }
+    }
+}
+
 
 // ######### index page userlist config ##########
 .userlist {
@@ -293,7 +318,7 @@ label {
     flex-direction: row;
     width: auto;
     height: 5vw;
-    background-color: $very-lightgray-color;
+    background-color: #fff;
     margin-bottom: .2vw;
     padding: .5vw;
     box-sizing: border-box;
@@ -304,6 +329,10 @@ label {
 }
 .user:active {
     transform: translateY(1px);
+}
+
+.user.active {
+    background-color: $very-lightgray-color;
 }
 
 .user_pic-container {
@@ -420,6 +449,10 @@ label {
     .frnds_msg-icon-container,
     .own_msg-icon-container {
         transform: scale(1);
+    }
+
+    .icon-container:hover {
+        transform: scale(1.01);
     }
 }
 .own_msgbox {
