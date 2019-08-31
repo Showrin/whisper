@@ -186,6 +186,67 @@ label {
     width: 1.2vw;
 }
 
+.dimmer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: #000;
+    opacity: 0;
+    z-index: 150000;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal {
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 30%;
+    height: auto;
+    background-color: #fff;
+    z-index: 200000;
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding: .5vw 1vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.modal_title {
+    font-family: 'muli-bold';
+    font-size: 1.6vw;
+    margin-bottom: .5vw;
+    align-self: flex-start;
+}
+
+.modal_text {
+    font-family: 'muli-bold';
+    font-size: 1vw;
+    margin: 3vw 0;
+}
+
+.modal_btn--close {
+    padding: .5vw 2vw;
+    font-size: .8vw;
+    color: #fff;
+    background-color: $primary-color;
+    margin-top: 0;
+}
+
+.modal_title--red {
+    color: $red-color;
+}
+
+.modal_btn--red {
+    background-color: $red-color;
+}
+
 
 // ######### signin and signup page config ##########
 .bg-container_img {
