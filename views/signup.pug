@@ -7,27 +7,27 @@ block content
         .bg-container_logo-div
             img.bg-container_white-logo(src="/images/icons/logo-white.svg")
 
-        .bg-container_login-div
+        form.bg-container_login-div
             h1.login-form_title Sign Up
 
             //- profile pic input
             .login-form_img
-                input#js_pro_pic(type="file", accept="image/", name="pro-pic", onchange="showIMG(this);", required)
+                input#js_pro_pic(type="file", accept="image/", name="pro-pic", onchange="showIMG(this);")
                 img#js_show_pro_pic(src="/images/icons/user.svg")
                 label#img_overlay(for="js_pro_pic")
                     img(src="/images/icons/camera.svg")
 
             label User Name 
                 span.form-error-msg (It will be showed to all users)
-            input#email(type='name', name='name', autocomplete='off', autocorrect="off", autocapitalize="off" spellcheck="false", required)
+            input#name(type='name', name='name', autocorrect="off", autocapitalize="off" spellcheck="false")
             span.form-error-msg 
 
             label Email
-            input#email(type='email', name='email', autocomplete='off', autocorrect="off", autocapitalize="off" spellcheck="false", required)
+            input#email(type='email', name='email', autocorrect="off", autocapitalize="off" spellcheck="false")
             span.form-error-msg 
 
             label Password
-            input#password(type='password', name='password', required)
+            input#password(type='password', name='password', autocomplete)
             span.form-error-msg 
 
             button Sign Up
@@ -36,4 +36,5 @@ block content
 
 
 block scripts
+    script(src="../javascripts/validator.min.js")
     script(src="../javascripts/login_script.js")
