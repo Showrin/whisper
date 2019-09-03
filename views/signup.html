@@ -20,20 +20,24 @@
     </div><img class="bg-container_img" src="/images/background/bg.jpg">
     <div class="bg-container">
       <div class="bg-container_logo-div"><img class="bg-container_white-logo" src="/images/icons/logo-white.svg"></div>
-      <form class="bg-container_login-div" id="js_signup_form">
+      <form class="bg-container_login-div" id="js_signup_form" method="POST" action="/signup_completion" encType="multipart/form-data">
         <h1 class="login-form_title">Sign Up</h1>
         <div class="login-form_img">
-          <input id="js_pro_pic" type="file" accept="image/x-png,image/jpeg,image/jpg" name="pro-pic" onchange="showIMG(this);"><img id="js_show_pro_pic" src="/images/icons/user.svg">
+          <input id="js_pro_pic" type="file" accept="image/x-png,image/jpeg,image/jpg" name="profilePic" onchange="showIMG(this);"><img id="js_show_pro_pic" src="/images/icons/user.svg">
           <label id="img_overlay" for="js_pro_pic"><img src="/images/icons/camera.svg"></label>
         </div>
-        <label>User Name <span class="form-error-msg">(It will be showed to all users)</span></label>
+        <label>User Name </label>
         <input id="name" type="name" name="name" autocorrect="off" autocapitalize="off" autocomplete="off" spellcheck="false"><span class="form-error-msg" id="js_name_error_msg"> </span>
         <label>Email</label>
         <input id="email" type="email" name="email" autocorrect="off" autocapitalize="off" autocomplete="off" spellcheck="false"><span class="form-error-msg" id="js_email_error_msg"> </span>
         <label>Password</label>
         <input id="password" type="password" name="password"><span class="form-error-msg" id="js_password_error_msg"> </span>
-        <button>Sign Up</button><span class="form-navigate-msg">Have an Account? Please <a class="form-navigate-msg_link" href="/signin">Sign In</a></span>
+        <label>Retype Password</label>
+        <input id="retypePassword" type="password" name="retypePassword"><span class="form-error-msg" id="js_retype_password_error_msg"> </span>
+        <button id="js_signup_btn">Sign Up</button><span class="form-navigate-msg">Have an Account? Please <a class="form-navigate-msg_link" href="/signin">Sign In</a></span>
       </form>
     </div>
+    <script src="../javascripts/validator.min.js"></script>
+    <script src="../javascripts/script.js"></script>
   </body>
 </html>

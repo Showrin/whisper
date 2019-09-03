@@ -1,25 +1,37 @@
 extends layout
 
 block content
+    .dimmer
+
+    .modal
+        .modal_title.modal_title--red Error 
+        .divider
+        .modal_text Invalid email Id or password
+        button.modal_btn--close.modal_btn--red Close
+
+    img.bg-container_img(src="/images/background/bg.jpg")
     img.bg-container_img(src="/images/background/bg.jpg")
 
     .bg-container
       .bg-container_logo-div
           img.bg-container_white-logo(src="/images/icons/logo-white.svg")
 
-      .bg-container_login-div
+      form#js_login_form.bg-container_login-div(method="POST", action="/signincheck", encType="multipart/form-data")
           h1.login-form_title Sign In
 
           label Email
-          input#email(type='email', name='email', autocomplete='off', autocorrect="off", autocapitalize="off" spellcheck="false", required)
-          span.form-error-msg 
+          input#login_email(type='email', name='email', autocomplete='off', autocorrect="off", autocapitalize="off" spellcheck="false", required)
 
           label Password
-          input#password(type='password', name='password', required)
+          input#login_password(type='password', name='password', required)
 
           button Sign In
           span.form-navigate-msg Don't Have an Account? Please 
               a.form-navigate-msg_link(href="/signup") Sign Up
 
+
+block scripts
+    script(src="../javascripts/validator.min.js")
+    script(src="../javascripts/script.js")
 
 

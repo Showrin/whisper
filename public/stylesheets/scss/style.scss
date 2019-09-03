@@ -83,10 +83,11 @@ input {
     background-color: transparent;
     box-sizing: border-box;
     width: 100%;
-    height: 3vw;
+    height: 2.6vw;
     padding: 1vw;
     color: #fff;
-    font-size: 1.2vw;
+    font-size: 1vw;
+    transition: all .2s ease-in-out;
 }
 
 input.solid-input {
@@ -97,20 +98,23 @@ input.solid-input {
     height: 3vw;
     padding: 1vw;
     color: $black-color;
-    font-size: 1.2vw;
+    font-size: 1vw;
 }
 
 label {
     font-size: 1.1vw;
     margin-bottom: .5vw;
     margin-right: auto;
-    margin-top: 1.5vw;
+    margin-top: .5vw;
 }
 
 .form-error-msg {
-    font-size: .8vw;
+    display: block;
+    font-size: .7vw;
+    min-height: 1.1vw;
     margin-right: auto;
-    margin-top: .2vw;
+    font-style: italic;
+    transition: all .2s ease-in-out;
 }
 
 //profile pic input config
@@ -204,9 +208,9 @@ label {
     position: absolute;
     top: 35%;
     left: 35%;
-    transform: translate(-50%, -50%) scale(0);
     width: 30%;
     height: auto;
+    transform: translate(-50%, -50%) scale(0);
     background-color: #fff;
     z-index: 200000;
     box-sizing: border-box;
@@ -273,6 +277,12 @@ label {
     width: 50%;
     justify-content: center;
     align-items: center;
+}
+
+#js_login_form {
+    label {
+        margin-top: 1.5vw;
+    }
 }
 
 .bg-container_login-div {
@@ -548,6 +558,7 @@ label {
     margin-left: 2vw;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
+    transition: all .2s ease-in-out;
 }
 .frnds_msg {
     background-color: $lighter-gray-color;

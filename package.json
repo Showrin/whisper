@@ -9,7 +9,10 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-fileupload": "^1.1.5",
+    "express-session": "^1.16.2",
     "http-errors": "~1.6.3",
+    "mongoose": "^5.6.11",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
     "socket.io": "^2.2.0"
