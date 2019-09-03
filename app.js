@@ -65,11 +65,17 @@ app.post('/signup_completion', function(req, res) {
 });
 
 app.post('/signincheck', function(req, res) {
-    userSession = req.session;
-    userSession.email = req.body.email;
+    email = req.body.email;
     
-    return res.redirect('/');
+    User.findOne({email: email}).then(function(doc) {
+        let userId = doc._id;
+        userSession = req.session;
+        userSession.userId = userId;
+    
+        res.redirect('/');
+    })
 })
+
 
 
 // catch 404 and forward to error handler
@@ -152,28 +158,16 @@ io.on('connection', function(socket) {
         emailAvailabilityChecker(email);
     })
 
-    socket.on('loginCheck', function(user) {
-        let email = user.email;
-        let password = user.password;
-        // socket.email = email;
-        // userSockets[email] = socket;
-        // console.log(userSockets);
-        console.log('faced')
-
-        User.findOne({email: email, password: password}, function(err, doc) {
+    socket.on('loginEmailCheck', function(email) {
+        
+        User.findOne({email: email}, function(err, doc) {
             if (err) {
                 console.log('err')
                 throw err;
             } else if (doc) {
-                socket.emit('loginSuccessful');
-                console.log('success')
-                // console.log("Hello : " + doc._id);
-                // User.findOne({_id: doc._id}).then(function(doc) {
-                //     console.log(doc)
-                // })
+                socket.emit('emailMatched', doc.password);
             } else {
-                socket.emit('loginFailed');
-                console.log('fail')
+                socket.emit('emailNotMatched');
             }
         })
     })

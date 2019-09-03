@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
     let userSession = req.session;
     
     if(userSession.userId) {
-        res.render('index', { title: 'Whisper', email: userSession.email });
+        res.render('index', { title: 'Whisper', userId: userSession.userId });
     } else {
         return res.redirect('/signin');
     }

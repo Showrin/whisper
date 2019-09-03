@@ -73,10 +73,10 @@ $('#js_signup_btn').click(function(e){
         retypePassword.focus();
     } else {   
         // password encryption
-        passwordKey = encryptionKeyGenerator(password.val());
-        encryptedPass = sjcl.encrypt(passwordKey.toString(), password.val());
-        password.val(encryptedPass);
-        retypePassword.val(encryptedPass);
+        let passwordKey = encryptionKeyGenerator(password.val());
+        encryptedPass = CryptoJS.AES.encrypt(password.val(), passwordKey.toString());
+        password.val(encryptedPass.toString());
+        retypePassword.val(encryptedPass.toString());
 
         $('#js_signup_form').submit();
 
@@ -90,28 +90,38 @@ $('#js_signup_btn').click(function(e){
 })
 
 
-// signin validation
-$('#js_login_form').submit(function(e) {
-    e.preventDefault();
-    let email = $('#login_email').val();
-    let password = $('#login_password').val();
 
-    // password encryption
-    passwordKey = encryptionKeyGenerator(password);
-    encryptedPass = sjcl.encrypt(passwordKey.toString(), password);
+// signin validation
+
+$('#js_signin_btn').click(function(e) {
+    e.preventDefault();
+
+    let loginEmail = $('#login_email').val();
     
-    
-    socket.emit('loginCheck', {email, password});
+    socket.emit('loginEmailCheck', loginEmail);
+    console.log(loginEmail)
 })
 
-socket.on('loginFailed', function() {
+socket.on('emailNotMatched', function() {
     openLoginErrorModal();
 })
 
-socket.on('loginSuccessful', function() {
-    $('#login_password').val(encryptedPass);
-    // $('#js_login_form').submit();
+socket.on('emailMatched', function(password) {
+
+    let loginPassword = $('#login_password').val();
+
+    // password encryption
+    passwordKey = encryptionKeyGenerator(loginPassword).toString();
+    let decryptedPass = CryptoJS.AES.decrypt(password, passwordKey).toString(CryptoJS.enc.Utf8);
+
+    if (decryptedPass == loginPassword) {
+        $('#js_login_form').submit();
+    } else {
+        openLoginErrorModal();
+    }
 })
+
+
 
 // logout functionality
 $('#js_logout_btn').click(function() {
@@ -269,7 +279,6 @@ function encryptionKeyGenerator(strToEncrypt) {
     var pass = strToEncrypt;
     var key = 0;
     var size = [...pass].length;
-    console.log([...pass]);
     [...pass].forEach((char, index) => {
 
         if(index%2 != 0) {
@@ -278,13 +287,10 @@ function encryptionKeyGenerator(strToEncrypt) {
             temp = pass.charCodeAt(index) * temp;
             temp = temp % index;
             key = key + temp;
-            console.log(index);
         } else {
             key = key + pass.charCodeAt(index);
-            console.log(index);
         }
     });
-    console.log(key);
 
     return key;
 }
