@@ -152,48 +152,36 @@ io.on('connection', function(socket) {
         emailAvailabilityChecker(email);
     })
 
-    socket.on('storingNewUserInfoInDB', function(newUser) {
-        // let name = newUser.newUserName;
-        // let email = newUser.newUserEmail;
-        // let password = newUser.newUserPassword;
-
-        
-        
+    socket.on('loginCheck', function(user) {
+        let email = user.email;
+        let password = user.password;
         // socket.email = email;
-        // socket.name = name;
-        // userSockets[socket.email] = socket;
+        // userSockets[email] = socket;
+        // console.log(userSockets);
+        console.log('faced')
+
+        User.findOne({email: email, password: password}, function(err, doc) {
+            if (err) {
+                console.log('err')
+                throw err;
+            } else if (doc) {
+                socket.emit('loginSuccessful');
+                console.log('success')
+                // console.log("Hello : " + doc._id);
+                // User.findOne({_id: doc._id}).then(function(doc) {
+                //     console.log(doc)
+                // })
+            } else {
+                socket.emit('loginFailed');
+                console.log('fail')
+            }
+        })
     })
 
-    // socket.on('loginCheck', function(user) {
-    //     let email = user.email;
-    //     let password = user.password;
-    //     socket.email = email;
-    //     userSockets[email] = socket;
-    //     console.log(userSockets);
-    //     console.log('faced')
-
-    //     User.findOne({email: email, password: password}, function(err, doc) {
-    //         if (err) {
-    //             console.log('err')
-    //             throw err;
-    //         } else if (doc) {
-    //             socket.emit('loginSuccessful');
-    //             console.log('success')
-    //             console.log("Hello : " + doc._id);
-    //             User.findOne({_id: doc._id}).then(function(doc) {
-    //                 console.log(doc)
-    //             })
-    //         } else {
-    //             socket.emit('loginFailed');
-    //             console.log('fail')
-    //         }
-    //     })
-    // })
-
-    // socket.on('disconnect', function() {
-    //     console.log('disconnected');
+    socket.on('disconnect', function() {
+        console.log('disconnected');
         
-    // })
+    })
 })
 
 module.exports = app;

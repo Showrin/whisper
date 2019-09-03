@@ -71,21 +71,20 @@ $('#js_signup_btn').click(function(e){
         password.focus();
     } else if (isRetypePasswordError) {
         retypePassword.focus();
-    } else {
-        let newUserName = username.val();
-        let newUserEmail = email.val();
-        let newUserPassword = password.val();
-        let newUserProfilePicSrc = profilePic.attr('src');
-        
+    } else {   
+        // password encryption
+        passwordKey = encryptionKeyGenerator(password.val());
+        encryptedPass = sjcl.encrypt(passwordKey.toString(), password.val());
+        password.val(encryptedPass);
+        retypePassword.val(encryptedPass);
+
         $('#js_signup_form').submit();
-        socket.emit('storingNewUserInfoInDB', {newUserName, newUserEmail, newUserPassword, newUserProfilePicSrc});
-        // TODO: these 2 fields may have to be deleted
 
         username.val('');
         email.val('');
         password.val('');
         retypePassword.val('');
-        profilePic.attr('src', '');
+        profilePic.attr('src', '/images/icons/user.svg');
     }
 
 })
@@ -93,21 +92,26 @@ $('#js_signup_btn').click(function(e){
 
 // signin validation
 $('#js_login_form').submit(function(e) {
-    // e.preventDefault();
+    e.preventDefault();
     let email = $('#login_email').val();
     let password = $('#login_password').val();
+
+    // password encryption
+    passwordKey = encryptionKeyGenerator(password);
+    encryptedPass = sjcl.encrypt(passwordKey.toString(), password);
+    
     
     socket.emit('loginCheck', {email, password});
 })
 
-// socket.on('loginFailed', function() {
-//     openLoginErrorModal();
-// })
+socket.on('loginFailed', function() {
+    openLoginErrorModal();
+})
 
-// socket.on('loginSuccessful', function() {
-//     console.log('hsvfhsdb')
-//     $('#js_login_form').submit();
-// })
+socket.on('loginSuccessful', function() {
+    $('#login_password').val(encryptedPass);
+    // $('#js_login_form').submit();
+})
 
 // logout functionality
 $('#js_logout_btn').click(function() {
@@ -254,8 +258,33 @@ function userNameCheck(username) {
             isNameError = true;
         } else {
             $('#js_name_error_msg').text('');
-            console.log('sdgcf')
             isNameError = false;
         }
     }
+}
+
+// Key generator for password encryption
+function encryptionKeyGenerator(strToEncrypt) {
+    
+    var pass = strToEncrypt;
+    var key = 0;
+    var size = [...pass].length;
+    console.log([...pass]);
+    [...pass].forEach((char, index) => {
+
+        if(index%2 != 0) {
+            var temp = 0;
+            temp = temp + (size - index);
+            temp = pass.charCodeAt(index) * temp;
+            temp = temp % index;
+            key = key + temp;
+            console.log(index);
+        } else {
+            key = key + pass.charCodeAt(index);
+            console.log(index);
+        }
+    });
+    console.log(key);
+
+    return key;
 }
