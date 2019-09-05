@@ -6,24 +6,30 @@ socket.emit('saveSocket', userId);
 // initial update at the time of loading the page
 socket.emit('fetchInitialUpdateOnPageLoad', userId);
 socket.on('initialUpdateOnPageload', function(userList) {
+    initialUpdateUserlist(userList);
+})
+
+
+// update userlist function
+function initialUpdateUserlist(userList) {
     
+    console.log(userList)
+    $('#userlist').innerHTML = "";
     userList.forEach((user, index) => {
         if (user.lastMsgTime != "") {
-            user.order = index - userList.length;
+            user.lastMsgTime = 0;
         } else {
-            user.order = 1;
         }
     })
 
     // sorting user based on last message
-    userList.sort((a, b) => (a.messageTime > b.messageTime) ? 1 : -1);
-    userList.sort((a, b) => (a.order > b.order) ? 1 : -1);
+    userList.sort((a, b) => (a.lastMsgTime > b.lastMsgTime) ? -1 : 1);
 
     userList.forEach((user, index) => {
         let name = user.name;
         let lastMsgTime;
-        let message, isReadClass, isActiveClass, isSeenClass, isSeenImgSrc, activeTabClass, order;
-        console.log(user)
+        let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '', activeTabClass = '', order;
+        
         if(index == 0) {
             activeTabClass = 'active';
         } else {
@@ -32,10 +38,9 @@ socket.on('initialUpdateOnPageload', function(userList) {
 
         if(user.lastMsgIsYours) {
             message = `You: ${user.lastMsg}`;
-            console.log(message)
+            
         } else {
             message = `${user.lastMsg}`;
-            console.log(message)
 
             if(user.isRead) {
                 isReadClass = '';
@@ -69,7 +74,7 @@ socket.on('initialUpdateOnPageload', function(userList) {
         }
 
         //initial userlist update
-        let userDiv = `<div class='user ${activeTabClass}' style="order: ${order}" data-userid="${user.userId}" data-name="${user.name}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
+        let userDiv = `<div class='user ${activeTabClass}' data-userid="${user.userId}" data-name="${user.name}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
 
         $('#userlist').append(userDiv);
 
@@ -97,8 +102,7 @@ socket.on('initialUpdateOnPageload', function(userList) {
         }
 
     });
-   
-})
+}
 
 // initial chatbox update (loding message)
 socket.on('initialChatboxMessages', function(messages) {
@@ -110,14 +114,15 @@ socket.on('initialChatboxMessages', function(messages) {
 
 // changes on user selection
 $('#userlist').on('click', '.user', function() {
-    var userId = $(this).attr('data-userid');
+    var recieverId = $(this).attr('data-userid');
     var userName = $(this).attr('data-name');
-    var userPicSrc = "/images/propics/" + userId + ".jpg";
+    var userPicSrc = "/images/propics/" + recieverId + ".jpg";
     var userActiveStatus = $(this).attr('data-is-active');
 
-    // changes is user list 
+    // changes in user list 
     $('.user').removeClass('active');
     $(this).addClass('active');
+    socket.emit('chatBoxUpdateOnUserChange', {userId, recieverId});
 
     // changes in Info list
     $('#js_info_pic').attr('src', userPicSrc);
@@ -127,7 +132,7 @@ $('#userlist').on('click', '.user', function() {
     $('#js_navbar_profile_pic').attr('src', userPicSrc);
     $('#js_navbar_profile_pic').attr('alt', userName);
     $('#js_navbar_profile_name').text(userName);
-    $('.navbar_chatbox-portion_user-details').attr('id', userId)
+    $('.navbar_chatbox-portion_user-details').attr('id', recieverId)
 
     if (userActiveStatus == "true") {
         $('#js_navbar_active_status').text("Active Now");
@@ -136,6 +141,84 @@ $('#userlist').on('click', '.user', function() {
     }
     
 })
+
+// chatbox update on user change
+socket.on('chatboxMessagesOnUserChange', function(messages) {
+    $('#js_chatbox').empty();
+    messages.forEach(function(messageInfo) {
+        loadMessage(messageInfo);
+    })
+})
+
+// userlist update when user is changed or new message come
+socket.on('userlistUpdate', function(userList) {
+    updateUserList(userList);
+})
+
+// update userlist after sending or recieving new message
+function updateUserList(userList) {
+    $('#userlist').empty();
+    userList.forEach((user, index) => {
+        if (user.lastMsgTime != "") {
+            user.order = 0;
+        }
+    })
+
+    // sorting user based on last message
+    userList.sort((a, b) => (a.lastMsgTime > b.lastMsgTime) ? -1 : 1);
+
+    userList.forEach((user, index) => {
+        let name = user.name;
+        let lastMsgTime;
+        let message, isReadClass, isActiveClass, isSeenClass, isSeenImgSrc, activeTabClass, order;
+        console.log(user)
+
+        if(user.lastMsgIsYours) {
+            message = `You: ${user.lastMsg}`;
+            console.log(message)
+        } else {
+            message = `${user.lastMsg}`;
+            console.log(message)
+
+            if(user.isRead) {
+                isReadClass = '';
+            } else {
+                isReadClass = 'not_read_msg';
+            }
+        }
+
+        if(user.isActive) {
+            isActiveClass = `is-active_indicator`;
+        } else {
+            isActiveClass = ``;
+        }
+
+        if(user.isSeen) {
+            isSeenClass = `seen_indicator`;
+            isSeenImgSrc = `seen.svg`;
+        } else {
+            isSeenClass = `not-seen_indicator`;
+            isSeenImgSrc = `not_seen.svg`;
+        }
+
+        if (user.lastMsgTime != "") {
+            lastMsgTime = moment(user.lastMsgTime.toString()).format('hh:mm a');
+            lastMsgTimeStyle = `style="opacity: 0;"`
+        } else {
+            lastMsgTime = "";
+            lastMsgTimeStyle = `style="opacity: 0;"`
+        }
+
+        //initial userlist update
+        let userDiv = `<div class='user' data-userid="${user.userId}" data-name="${user.name}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
+
+        $('#userlist').append(userDiv);
+
+    });
+
+    var activeUserTabId = $('.navbar_chatbox-portion_user-details').attr('id');
+    $(`*[data-userid="${activeUserTabId}"]`).addClass('active');
+}
 
 // changes on info selection
 $('#js_user_info_btn').click(function() {
@@ -204,16 +287,24 @@ sendMsgForm.submit(function(e) {
     }
 
     $('#js_sendmsg-input').val('');
-
-    console.log(recieverId +'\n'+ selfUserId +'\n'+ sentMessage);
 })
 
 socket.on('newMessageFromOtherToSender', function(messageInfo) {
-    loadMessage(messageInfo);
+    var userNavId = $('.navbar_chatbox-portion_user-details').attr('id');
+    
+    if(userNavId == messageInfo.senderId) {
+        
+        loadMessage(messageInfo);
+    }
 });
 
 socket.on('confirmationOfsavingMessageToSender', function(messageInfo) {
-    loadMessage(messageInfo);
+    var userNavId = $('.navbar_chatbox-portion_user-details').attr('id');
+
+    if(userNavId == messageInfo.recieverId) {
+        
+        loadMessage(messageInfo);
+    }
 });
 
 
