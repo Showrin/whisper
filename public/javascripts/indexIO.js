@@ -12,11 +12,11 @@ socket.on('initialUpdateOnPageload', function(userList) {
 
 // update userlist function
 function initialUpdateUserlist(userList) {
-    
-    $('#userlist').innerHTML = "";
-    userList.forEach((user, index) => {
+    console.log(userList)
+
+    userList.forEach((user) => {
         if (user.lastMsgTime == "") {
-            user.lastMsgTime = 0;
+            user.lastMsgTime = "1970-01-01T22:21:55.984Z";
         } else {
         }
     })
@@ -27,7 +27,7 @@ function initialUpdateUserlist(userList) {
     userList.forEach((user, index) => {
         let name = user.name;
         let lastMsgTime;
-        let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '', activeTabClass = '', order;
+        let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '', activeTabClass = '';
         
         if(index == 0) {
             activeTabClass = 'active';
@@ -65,11 +65,9 @@ function initialUpdateUserlist(userList) {
         if (user.lastMsgTime != "") {
             lastMsgTime = moment(user.lastMsgTime.toString()).format('hh:mm a');
             lastMsgTimeStyle = `style="opacity: 0;"`
-            order = index - userList.length; //returns a negative number
         } else {
             lastMsgTime = "";
             lastMsgTimeStyle = `style="opacity: 0;"`
-            order = 1;
         }
 
         //initial userlist update
@@ -157,9 +155,10 @@ socket.on('userlistUpdate', function(userList) {
 // update userlist after sending or recieving new message
 function updateUserList(userList) {
     $('#userlist').empty();
-    userList.forEach((user, index) => {
-        if (user.lastMsgTime != "") {
-            user.order = 0;
+    userList.forEach((user) => {
+        if (user.lastMsgTime == "") {
+            user.lastMsgTime = "1970-01-01T22:21:55.984Z";
+        } else {
         }
     })
 
@@ -169,15 +168,13 @@ function updateUserList(userList) {
     userList.forEach((user, index) => {
         let name = user.name;
         let lastMsgTime;
-        let message, isReadClass, isActiveClass, isSeenClass, isSeenImgSrc, activeTabClass, order;
-        console.log(user)
+        let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '';
 
         if(user.lastMsgIsYours) {
-            message = `You: ${user.lastMsg}`;
-            console.log(message)
+            message = `You: ${doDecryption(user.lastMsg)}`;
+            
         } else {
-            message = `${user.lastMsg}`;
-            console.log(message)
+            message = `${doDecryption(user.lastMsg)}`;
 
             if(user.isRead) {
                 isReadClass = '';

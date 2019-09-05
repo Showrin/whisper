@@ -256,90 +256,86 @@ io.on('connection', function(socket) {
 
                 console.log(messages[messages.length-1]);
 
-                // var userListForSender = [];
-                // var userListForReciever = [];
-                // User.find({}, async function(err, users) {
-                //     await new Promise(async function(resolve) {
-                //         for(let i = 0; i < users.length; ++i) {
-                //             if(users[i]._id != senderId) {
-                //                 await Message.find({senderId: {$in: [users[i]._id, senderId]}, recieverId: {$in: [users[i]._id, senderId]}}).then(function(messages){
+                var userListForSender = [];
+                User.find({}, async function(err, users) {
+                    await new Promise(async function(resolve) {
+                        for(let i = 0; i < users.length; ++i) {
+                            if(users[i]._id != senderId) {
+                                await Message.find({senderId: {$in: [users[i]._id, senderId]}, recieverId: {$in: [users[i]._id, senderId]}}).then(function(messages){
                                     
-                //                     for(let i = messages.length-1; i == messages.length-1; ++i) {
-                //                         if (messages[i].senderId == senderId) {
-                //                             lastMsgIsYours = true;
-                //                             isRead = false;
+                                    let index = messages.length - 1;
+                                    if (messages[index].senderId == senderId) {
+                                        lastMsgIsYours = true;
+                                        isRead = false;
 
-                //                         } else {
-                //                             lastMsgIsYours = false;
+                                    } else {
+                                        lastMsgIsYours = false;
 
-                //                             if(messages[i].isSeen) {
-                //                                 isRead = true;
+                                        if(messages[index].isSeen) {
+                                            isRead = true;
 
-                //                             } else {
-                //                                 isRead = false;
+                                        } else {
+                                            isRead = false;
 
-                //                             }
-                //                         }
-                //                     }
+                                        }
+                                    }
 
-                //                     userListForSender.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[i].messageTime, isSeen: messages[i].isSeen, isRead: isRead, messageType: messages[i].messageType, lastMsg: messages[i].message});
+                                    userListForSender.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[index].messageTime, isSeen: messages[index].isSeen, isRead: isRead, messageType: messages[index].messageType, lastMsg: messages[index].message});
                                     
-                //                 }).catch(function(err) {
+                                }).catch(function(err) {
                                     
-                //                     userListForSender.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
-                //                 })
-                //             }
-                //         }
+                                    userListForSender.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
+                                })
+                            }
+                        }
 
-                //         resolve();
-                //     });
-                //     // socket.emit('userlistUpdate', userListForSender);
-                // })
-
-                
-                // User.find({}, async function(err, users) {
-                //     await new Promise(async function(resolve) {
-                //         for(let i = 0; i < users.length; ++i) {
-                //             if(users[i]._id != recieverId) {
-                //                 await Message.find({senderId: {$in: [users[i]._id, recieverId]}, recieverId: {$in: [users[i]._id, recieverId]}}).then(function(messages){
-                                    
-                //                     for(let i = messages.length-1; i == messages.length-1; ++i) {
-                //                         if (messages[i].senderId == recieverId) {
-                //                             lastMsgIsYours = true;
-                //                             isRead = false;
-
-                //                         } else {
-                //                             lastMsgIsYours = false;
-
-                //                             if(messages[i].isSeen) {
-                //                                 isRead = true;
-
-                //                             } else {
-                //                                 isRead = false;
-
-                //                             }
-                //                         }
-                //                     }
-
-                //                     userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[i].messageTime, isSeen: messages[i].isSeen, isRead: isRead, messageType: messages[i].messageType, lastMsg: messages[i].message});
-                                    
-                //                 }).catch(function(err) {
-                                    
-                //                     userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
-                //                 })
-                //             }
-                //         }
-
-                //         resolve();
-                //     });
+                        resolve();
+                    });
                     
-                //     // if(userSockets[recieverId]) {
-                //     //     userSockets[recieverId].emit('userlistUpdate', userListForReciever);
-                //     // }
-                // })
-            })
+                    socket.emit('userlistUpdate', userListForSender);
+                })
 
-            
+                var userListForReciever = [];
+                User.find({}, async function(err, users) {
+                    await new Promise(async function(resolve) {
+                        for(let i = 0; i < users.length; ++i) {
+                            if(users[i]._id != recieverId) {
+                                await Message.find({senderId: {$in: [users[i]._id, recieverId]}, recieverId: {$in: [users[i]._id, recieverId]}}).then(function(messages){
+                                    
+                                    let index = messages.length - 1;
+                                    if (messages[index].senderId == recieverId) {
+                                        lastMsgIsYours = true;
+                                        isRead = false;
+
+                                    } else {
+                                        lastMsgIsYours = false;
+
+                                        if(messages[index].isSeen) {
+                                            isRead = true;
+
+                                        } else {
+                                            isRead = false;
+
+                                        }
+                                    }
+
+                                    userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[index].messageTime, isSeen: messages[index].isSeen, isRead: isRead, messageType: messages[index].messageType, lastMsg: messages[index].message});
+                                    
+                                }).catch(function(err) {
+                                    
+                                    userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
+                                })
+                            }
+                        }
+
+                        resolve();
+                    });
+                    
+                    if(userSockets[recieverId]) {
+                        userSockets[recieverId].emit('userlistUpdate', userListForReciever);
+                    }
+                })
+            })            
         })
     })
 
