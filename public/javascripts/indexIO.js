@@ -12,7 +12,6 @@ socket.on('initialUpdateOnPageload', function(userList) {
 
 // update userlist function
 function initialUpdateUserlist(userList) {
-    console.log(userList)
 
     userList.forEach((user) => {
         if (user.lastMsgTime == "") {
@@ -37,9 +36,16 @@ function initialUpdateUserlist(userList) {
 
         if(user.lastMsgIsYours) {
             message = `You: ${doDecryption(user.lastMsg)}`;
+            lastMsgTimeStyle = `style="opacity: 0;"`
             
         } else {
             message = `${doDecryption(user.lastMsg)}`;
+            
+            if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
+                lastMsgTimeStyle = `style="opacity: 1;"`
+            } else {
+                lastMsgTimeStyle = `style="opacity: 0;"`
+            }
 
             if(user.isRead) {
                 isReadClass = '';
@@ -62,12 +68,10 @@ function initialUpdateUserlist(userList) {
             isSeenImgSrc = `not_seen.svg`;
         }
 
-        if (user.lastMsgTime != "") {
+        if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
             lastMsgTime = moment(user.lastMsgTime.toString()).format('hh:mm a');
-            lastMsgTimeStyle = `style="opacity: 0;"`
         } else {
             lastMsgTime = "";
-            lastMsgTimeStyle = `style="opacity: 0;"`
         }
 
         //initial userlist update
@@ -172,9 +176,16 @@ function updateUserList(userList) {
 
         if(user.lastMsgIsYours) {
             message = `You: ${doDecryption(user.lastMsg)}`;
+            lastMsgTimeStyle = `style="opacity: 0;"`
             
         } else {
             message = `${doDecryption(user.lastMsg)}`;
+            
+            if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
+                lastMsgTimeStyle = `style="opacity: 1;"`
+            } else {
+                lastMsgTimeStyle = `style="opacity: 0;"`
+            }
 
             if(user.isRead) {
                 isReadClass = '';
@@ -199,10 +210,8 @@ function updateUserList(userList) {
 
         if (user.lastMsgTime != "") {
             lastMsgTime = moment(user.lastMsgTime.toString()).format('hh:mm a');
-            lastMsgTimeStyle = `style="opacity: 0;"`
         } else {
-            lastMsgTime = "";
-            lastMsgTimeStyle = `style="opacity: 0;"`
+            lastMsgTime = "1970-01-01T22:21:55.984Z";
         }
 
         //initial userlist update
