@@ -241,7 +241,7 @@ $('#js_user_info_btn').click(function() {
 function loadMessage(messageInfo) {
     var seenIndicator;
     var messageTime = moment(messageInfo.messageTime.toString()).format('hh:mm a');
-    var message = messageInfo.message;
+    var message = doDecryption(messageInfo.message);
     var messageId = messageInfo._id;
 
     if(messageInfo.senderId == userId) {
@@ -283,6 +283,7 @@ sendMsgForm.submit(function(e) {
     let messageType = 'message';
 
     if(sentMessage != "") {
+        sentMessage = doEncryption(sentMessage);
         socket.emit('saveMessageInServerDB', {selfUserId, recieverId, messageType, sentMessage});
     }
 
@@ -306,5 +307,18 @@ socket.on('confirmationOfsavingMessageToSender', function(messageInfo) {
         loadMessage(messageInfo);
     }
 });
+
+// encryption function
+function doEncryption(messageToEncrypt, key = "5d6f05fb1004e43b14321d11") {
+    var encryptedMessage = CryptoJS.AES.encrypt(messageToEncrypt, key);
+    return encryptedMessage.toString(); //it's very important. Will cause error if it is not done
+}
+
+function doDecryption(messageToDecrypt, key = "5d6f05fb1004e43b14321d11") {
+    var decryptedMessage = CryptoJS.AES.decrypt(messageToDecrypt, key).toString(CryptoJS.enc.Utf8);
+    return decryptedMessage;
+}
+
+// console.log(doDecryption())
 
 
