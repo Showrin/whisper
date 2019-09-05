@@ -386,6 +386,8 @@ label {
     border-right: 1px solid $lightest-gray-color; 
     overflow: hidden;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
 }
 
 .user {
@@ -468,6 +470,7 @@ label {
 
 .user_confirmation-time-container {
     display: flex;
+    width: 3.8vw;
     justify-content: center;
     align-items: center;
     flex-direction: column;

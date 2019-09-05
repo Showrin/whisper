@@ -1,4 +1,4 @@
-.navbar
+.navbar(id=userId)
     .navbar_userlist-portion
         img.navbar_logo(src="/images/icons/logo-color.svg", alt="Whisper")
         
@@ -8,11 +8,10 @@
     .navbar_chatbox-portion
         .navbar_chatbox-portion_user-details
             .user_pic-container
-                img#js_navbar_profile_pic(src=picSrcOfWhomToChat, alt=nameOfWhomToChat)
+                img#js_navbar_profile_pic(src="", alt="")
             .user_info-container
-                span#js_navbar_profile_name.user_name= nameOfWhomToChat
-                if isActive
-                    span#js_navbar_active_status.is-active_status Active Now
+                span#js_navbar_profile_name.user_name
+                span#js_navbar_active_status.is-active_status
 
         .icon-container.left-gap
             img.icon-container_icon(src="/images/icons/call.svg")

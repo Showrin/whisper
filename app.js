@@ -32,7 +32,7 @@ app.use('/users', usersRouter);
 
 
 // ############################### Routing for all post methods ##################################
-var userSession;
+
 
 app.post('/signup_completion', function(req, res) {
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
@@ -54,6 +54,7 @@ app.post('/signup_completion', function(req, res) {
                 if (err) {
                     return res.status(500).send(err);
                 } else {
+                    var userSession;
                     userSession = req.session;
                     userSession.userId = userId;
             
@@ -68,10 +69,10 @@ app.post('/signincheck', function(req, res) {
     email = req.body.email;
     
     User.findOne({email: email}).then(function(doc) {
-        let userId = doc._id;
-        userSession = req.session;
+        let userId = doc._id.toString();
+        let userSession = req.session;
         userSession.userId = userId;
-    
+
         res.redirect('/');
     })
 })
@@ -119,16 +120,28 @@ var msgSchema = mongoose.Schema({
     senderId: String,
     recieverId: String,
     message: String,
+    messageType: String,
     isRead: Boolean,
     isSeen: Boolean,
-    timeForSender: String,
-    timeForSender: String,
+    messageTime: {type: Date, default: Date.now},
     deletedForSender: Boolean,
     deletedForReciever: Boolean
 })
 
 var User = mongoose.model('users', userSchema); 
 var Message = mongoose.model('personal_messages', msgSchema);
+
+// var newMsg = new Message({senderId: "5d6f05fb1004e43b14321d11", recieverId: "5d6e69e01004e43b14321d0f", message: "Hi.... What do you do?", messageType: "message", isSeen: false, deletedForSender: true, deletedForReciever: true});
+
+// newMsg.save(function() {
+//     setTimeout(() => {
+        
+//     }, 1000);
+// });
+
+// var newMsg = new Message({senderId: "5d6e69e01004e43b14321d0f", recieverId: "5d6f05fb1004e43b14321d11", message: "Thinking about life...", messageType: "message", isSeen: false, deletedForSender: true, deletedForReciever: true});
+
+// newMsg.save();
 
 
 // ############ Socket Programs ####################
@@ -172,10 +185,249 @@ io.on('connection', function(socket) {
         })
     })
 
+    socket.on('saveSocket', function(userId) {
+        userSockets[userId] = socket;
+    })
+
+    socket.on('fetchInitialUpdateOnPageLoad', function(userId) {
+        var userList = [];
+        User.find({}, async function(err, users) {
+            await new Promise(async function(resolve) {
+                for(let i = 0; i < users.length; ++i) {
+                    if(users[i]._id != userId) {
+                        await Message.find({senderId: {$in: [users[i]._id, userId]}, recieverId: {$in: [users[i]._id, userId]}}).sort({messageTime: -1}).then(function(messages){
+                            
+                            for(let i = 0; i == 0; ++i) {
+                                if (messages[i].senderId == userId) {
+                                    lastMsgIsYours = true;
+                                    isRead = false;
+
+                                } else {
+                                    lastMsgIsYours = false;
+
+                                    if(messages[i].isSeen) {
+                                        isRead = true;
+
+                                    } else {
+                                        isRead = false;
+
+                                    }
+                                }
+                            }
+
+                            userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[i].messageTime, isSeen: messages[i].isSeen, isRead: isRead, messageType: messages[i].messageType, lastMsg: messages[i].message});
+                            
+                        }).catch(function(err) {
+                            
+                            userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
+                        })
+                    }
+                }
+
+                resolve();
+            });
+            
+            socket.emit('initialUpdateOnPageload', userList);
+        })
+    })
+
+    socket.on('saveMessageInServerDB', function(messagePacket) {
+        var newMessage = new Message({senderId: messagePacket.selfUserId, recieverId: messagePacket.recieverId, message: messagePacket.sentMessage, messageType: messagePacket.messageType, isSeen: false, deletedForSender: false, deletedForReciever: false});
+
+        newMessage.save().then(function() {
+            
+            Message.find({senderId: messagePacket.selfUserId, recieverId: messagePacket.recieverId}).then(function(messages) {
+                theMessage = messages[messages.length-1]; //it returns the ever last message
+                messageId = theMessage._id;
+                senderId = theMessage.senderId;
+                recieverId = theMessage.recieverId;
+                messageToSee = theMessage.message;
+                messageType = theMessage.messageType;
+                isSeen = theMessage.isSeen;
+                deletedForSender = theMessage.deletedForSender;
+                deletedForReciever = theMessage.deletedForReciever;
+                messageTime = theMessage.messageTime;
+                
+                if(userSockets[recieverId]) {
+                    userSockets[recieverId].emit('newMessageFromOtherToSender', {_Id: messageId, senderId: senderId, recieverId: recieverId, message: messageToSee, messageType: messageType, isSeen: isSeen, deletedForSender: deletedForSender, deletedForReciever: deletedForReciever, messageTime: messageTime});
+                }
+
+                socket.emit('confirmationOfsavingMessageToSender', {_Id: messageId, senderId: senderId, recieverId: recieverId, message: messageToSee, messageType: messageType, isSeen: isSeen, deletedForSender: deletedForSender, deletedForReciever: deletedForReciever, messageTime: messageTime})
+
+                console.log(messages[messages.length-1]);
+            })
+
+            
+        })
+    })
+
+    socket.on('initialChatboxMessagesUpdate', function(ids) {
+        Message.find({senderId: {$in: [ids.senderId, ids.recieverId]}, recieverId: {$in: [ids.senderId, ids.recieverId]}}).then(function(messages) {
+            socket.emit('initialChatboxMessages', messages);
+        })
+    })
+
     socket.on('disconnect', function() {
         console.log('disconnected');
         
     })
 })
+
+
+// -------------- User defined functions -----------------
+// update user list
+
+
+// function saveUserListInSession(userList, userSess = userSession) {
+//     userSess.userList = userList;
+//     // console.log(userSession);
+//     // console.log(userList);
+// }
+
+// var userList = [];
+//     User.find({}, async function(err, users) {
+//         await new Promise(async function(resolve) {
+//             for(let i = 0; i < users.length; ++i) {
+//                 if(users[i]._id != userId) {
+//                     await Message.find({senderId: {$in: [users[i]._id, userId]}, recieverId: {$in: [users[i]._id, userId]}}).sort({messageTime: -1}).then(function(messages){
+//                         for(let i = 0; i == 0; ++i) {
+//                             if (messages[i].senderId == userId) {
+//                                 lastMsgIsYours = true;
+
+//                             } else {
+//                                 lastMsgIsYours = false;
+
+//                                 if(messages[i].isSeen) {
+//                                     isRead = true;
+
+//                                 } else {
+//                                     isRead = false;
+
+//                                 }
+//                             }
+//                         }
+
+//                         userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, messageTime: messages[i].messageTime, isSeen: messages[i].isSeen, isRead: isRead, messageType: messages[i].messageType, messages: messages[i].message});
+                        
+//                     }).catch(function(err) {
+//                         console.log('error');
+//                         userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, messageTime: "", isSeen: false, isRead: false, messageType: "", messages: ""});
+//                     })
+//                 }
+//             }
+
+//             resolve();
+
+//         });
+//         // console.log(userSession);
+//         saveUserListInSession(userList);
+//     })
+
+// console.log(userSession);
+
+// async function updateUserList(userId, callback) {
+    
+// }
+
+// updateUserList(userId, saveUserListInSession)
+    
+
+// function getUsers(selfUserId) {
+//     var users;
+//     User.find({_id: {$ne: selfUserId}}).exec();
+// }
+// console.log(users);
+// console.log(getUsers("5d6f05fb1004e43b14321d11"));
+
+
+// function updateUserList(userId) {
+//     User.find({}, function(err, users) {
+//         if(err) {
+//             throw err;
+            
+//         } else if(users) {
+//             for (let i = 0; i < users.length; ++i) {
+//                 if (users[i]._id != userId) {
+//                     console.log(users[i].name);
+
+//                     Message.find({senderId: {$in: [users[i]._id, userId]}, recieverId: {$in: [users[i]._id, userId]}}).sort({messageTime: -1}).exec(function(err, messages) {
+//                         for (let i = 0; i < messages.length; ++i) {
+//                             if (i > 0) {
+//                                 break;
+                                
+//                             } else {
+//                                 if (messages[i].senderId == userId) {
+//                                     lastMsgIsYours = true;
+
+//                                 } else {
+//                                     lastMsgIsYours = false;
+
+//                                     if(messages[i].isSeen) {
+//                                         isRead = true;
+
+//                                     } else {
+//                                         isRead = false;
+
+//                                     }
+//                                 }
+
+//                                 pushUser();
+//                             }
+//                         }
+//                     }) 
+//                 }
+//             }
+//         }
+//     }).then(()=> {
+//         show()
+//     });
+// }
+// function pushUser(userId, name, isActive, lastMsgIsYours, messageTime, isSeen, isRead, messageType, message) {
+//     userList.push({userId: userId, name: name, isActive: isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messageTime, isSeen: isSeen, isRead: isRead, msgType: messageType, lastMsg: message});
+// }
+
+// function show() {
+//     console.log(userList);
+// }
+
+
+
+// show()
+
+// async function init () {
+//     await pre();
+//     pos();
+// }
+
+// function pre() {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             console.log('lalalal')
+//             resolve()
+//         }, 1000);
+//     }) 
+// }
+
+// function pos() {
+//     console.log('yes')
+// }
+
+// init()
+
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+//   }
+  
+//   async function demo() {
+//     console.log('2...');
+//     await sleep(2000);
+//     console.log('3...');
+//   }
+  
+//   console.log('1...');
+//   demo().then(() => {
+//       console.log('4.');
+//   });
+
 
 module.exports = app;
