@@ -190,33 +190,32 @@ io.on('connection', function(socket) {
     })
 
     socket.on('fetchInitialUpdateOnPageLoad', function(userId) {
+        
         var userList = [];
         User.find({}, async function(err, users) {
             await new Promise(async function(resolve) {
                 for(let i = 0; i < users.length; ++i) {
                     if(users[i]._id != userId) {
                         await Message.find({senderId: {$in: [users[i]._id, userId]}, recieverId: {$in: [users[i]._id, userId]}}).then(function(messages){
-                            console.log(messages);
                             
-                            for(let i = messages.length-1; i == messages.length-1; ++i) {
-                                if (messages[i].senderId == userId) {
-                                    lastMsgIsYours = true;
-                                    isRead = false;
+                            let index = messages.length - 1;
+                            if (messages[index].senderId == userId) {
+                                lastMsgIsYours = true;
+                                isRead = false;
+
+                            } else {
+                                lastMsgIsYours = false;
+
+                                if(messages[index].isSeen) {
+                                    isRead = true;
 
                                 } else {
-                                    lastMsgIsYours = false;
+                                    isRead = false;
 
-                                    if(messages[i].isSeen) {
-                                        isRead = true;
-
-                                    } else {
-                                        isRead = false;
-
-                                    }
                                 }
                             }
 
-                            userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[i].messageTime, isSeen: messages[i].isSeen, isRead: isRead, messageType: messages[i].messageType, lastMsg: messages[i].message});
+                            userList.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[index].messageTime, isSeen: messages[index].isSeen, isRead: isRead, messageType: messages[index].messageType, lastMsg: messages[index].message});
                             
                         }).catch(function(err) {
                             

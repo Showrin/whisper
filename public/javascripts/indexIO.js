@@ -13,10 +13,9 @@ socket.on('initialUpdateOnPageload', function(userList) {
 // update userlist function
 function initialUpdateUserlist(userList) {
     
-    console.log(userList)
     $('#userlist').innerHTML = "";
     userList.forEach((user, index) => {
-        if (user.lastMsgTime != "") {
+        if (user.lastMsgTime == "") {
             user.lastMsgTime = 0;
         } else {
         }
@@ -37,10 +36,10 @@ function initialUpdateUserlist(userList) {
         }
 
         if(user.lastMsgIsYours) {
-            message = `You: ${user.lastMsg}`;
+            message = `You: ${doDecryption(user.lastMsg)}`;
             
         } else {
-            message = `${user.lastMsg}`;
+            message = `${doDecryption(user.lastMsg)}`;
 
             if(user.isRead) {
                 isReadClass = '';
@@ -318,7 +317,5 @@ function doDecryption(messageToDecrypt, key = "5d6f05fb1004e43b14321d11") {
     var decryptedMessage = CryptoJS.AES.decrypt(messageToDecrypt, key).toString(CryptoJS.enc.Utf8);
     return decryptedMessage;
 }
-
-// console.log(doDecryption())
 
 
