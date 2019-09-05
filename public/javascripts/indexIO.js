@@ -199,7 +199,9 @@ sendMsgForm.submit(function(e) {
     let sentMessage = $('#js_sendmsg-input').val();
     let messageType = 'message';
 
-    socket.emit('saveMessageInServerDB', {selfUserId, recieverId, messageType, sentMessage});
+    if(sentMessage != "") {
+        socket.emit('saveMessageInServerDB', {selfUserId, recieverId, messageType, sentMessage});
+    }
 
     $('#js_sendmsg-input').val('');
 
