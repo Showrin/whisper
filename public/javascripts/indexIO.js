@@ -48,7 +48,7 @@ function initialUpdateUserlist(userList) {
 
             lastMsgTimeStyle = `style="opacity: 0;"`
 
-            if(user.isRead) {
+            if(user.isRead || message == "") {
                 isReadClass = '';
             } else {
                 isReadClass = 'not_read_msg';
@@ -239,7 +239,7 @@ function updateUserList(userList) {
             
             lastMsgTimeStyle = `style="opacity: 0;"`
 
-            if(user.isRead) {
+            if(user.isRead || message == "") {
                 isReadClass = '';
             } else {
                 isReadClass = 'not_read_msg';
@@ -301,14 +301,13 @@ function loadMessage(messageInfo) {
     var message = doDecryption(messageInfo.message);
     var messageId = messageInfo._id;
 
-    if(messageInfo.senderId == userId) {
+    if(messageInfo.messageType == 'file') {
+        fileClass = 'file_msg';
+    } else {
+        fileClass = '';
+    }
 
-        if(messageInfo.messageType == 'file') {
-            fileClass = 'file_msg';
-        } else {
-            fileClass = '';
-        }
-        console.log(fileClass)
+    if(messageInfo.senderId == userId) {
         
         if(messageInfo.isSeen) {
             seenIndicator = `<img class="js_chatBox_seen_indicator seen_indicator" src="/images/icons/seen.svg">`;
@@ -319,12 +318,6 @@ function loadMessage(messageInfo) {
         var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
 
     } else {
-
-        if(messageInfo.messageType == 'file') {
-            flieClass = 'file_msg';
-        } else {
-            flieClass = '';
-        }
 
         var messageDiv = `<div class="chatbox_msgbox frnds_msgbox" id="${messageId}"><div class="chatbox_msg frnds_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
     }
