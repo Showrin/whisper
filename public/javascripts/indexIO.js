@@ -36,16 +36,17 @@ function initialUpdateUserlist(userList) {
 
         if(user.lastMsgIsYours) {
             message = `You: ${doDecryption(user.lastMsg)}`;
-            lastMsgTimeStyle = `style="opacity: 0;"`
-            
-        } else {
-            message = `${doDecryption(user.lastMsg)}`;
             
             if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
                 lastMsgTimeStyle = `style="opacity: 1;"`
             } else {
                 lastMsgTimeStyle = `style="opacity: 0;"`
             }
+            
+        } else {
+            message = `${doDecryption(user.lastMsg)}`;
+
+            lastMsgTimeStyle = `style="opacity: 0;"`
 
             if(user.isRead) {
                 isReadClass = '';
@@ -99,6 +100,10 @@ function initialUpdateUserlist(userList) {
             let senderId = userId;
             let recieverId = user.userId;
             socket.emit('initialChatboxMessagesUpdate', {senderId, recieverId}); 
+
+            // sending seen message update
+            socket.emit('seenMessagesUpadate', {senderId: user.userId, recieverId: userId});
+            socket.emit('chatBoxSeenMessageUpdate', user.userId);
             
         }
 
@@ -124,6 +129,10 @@ $('#userlist').on('click', '.user', function() {
     $('.user').removeClass('active');
     $(this).addClass('active');
     socket.emit('chatBoxUpdateOnUserChange', {userId, recieverId});
+    socket.emit('seenMessagesUpadate', {senderId: recieverId, recieverId: userId});
+    socket.emit('chatBoxSeenMessageUpdate', recieverId);
+    $($(this).find('.user_name')).removeClass('not_read_msg');
+    $($(this).find('.user_msg')).removeClass('not_read_msg');
 
     // changes in Info list
     $('#js_info_pic').attr('src', userPicSrc);
@@ -141,6 +150,11 @@ $('#userlist').on('click', '.user', function() {
         $('#js_navbar_active_status').text("");
     }
     
+})
+
+// seen message update
+socket.on('chatBoxSeenMessageUpdateToSender', function() {
+    chatBoxSeenUpdate();
 })
 
 // chatbox update on user change
@@ -176,16 +190,17 @@ function updateUserList(userList) {
 
         if(user.lastMsgIsYours) {
             message = `You: ${doDecryption(user.lastMsg)}`;
-            lastMsgTimeStyle = `style="opacity: 0;"`
-            
-        } else {
-            message = `${doDecryption(user.lastMsg)}`;
             
             if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
                 lastMsgTimeStyle = `style="opacity: 1;"`
             } else {
                 lastMsgTimeStyle = `style="opacity: 0;"`
             }
+            
+        } else {
+            message = `${doDecryption(user.lastMsg)}`;
+            
+            lastMsgTimeStyle = `style="opacity: 0;"`
 
             if(user.isRead) {
                 isReadClass = '';
@@ -252,9 +267,9 @@ function loadMessage(messageInfo) {
     if(messageInfo.senderId == userId) {
         
         if(messageInfo.isSeen) {
-            seenIndicator = `<img class="seen_indicator" src="/images/icons/seen.svg">`;
+            seenIndicator = `<img class="js_chatBox_seen_indicator seen_indicator" src="/images/icons/seen.svg">`;
         } else {
-            seenIndicator = `<img class="not-seen_indicator" src="/images/icons/not_seen.svg">`;
+            seenIndicator = `<img class="js_chatBox_seen_indicator not-seen_indicator" src="/images/icons/not_seen.svg">`;
         }
 
         var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
@@ -270,6 +285,13 @@ function loadMessage(messageInfo) {
     }, 800);
 }
 
+
+// chatbox seen indicator update
+function chatBoxSeenUpdate() {
+    $('.js_chatBox_seen_indicator.not-seen_indicator').addClass('seen_indicator');
+    $('.js_chatBox_seen_indicator.not-seen_indicator').removeClass('not-seen_indicator');
+    $('.js_chatBox_seen_indicator').attr('src', '/images/icons/seen.svg');
+}
 
 // send messages configuration
 var sendMsgForm = $('#js_chatbox_sendmsg-form');
@@ -301,6 +323,8 @@ socket.on('newMessageFromOtherToSender', function(messageInfo) {
     if(userNavId == messageInfo.senderId) {
         
         loadMessage(messageInfo);
+        socket.emit('seenMessagesUpadate', {senderId: messageInfo.senderId, recieverId: messageInfo.recieverId});
+        socket.emit('chatBoxSeenMessageUpdate', messageInfo.senderId);
     }
 });
 

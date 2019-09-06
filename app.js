@@ -347,8 +347,66 @@ io.on('connection', function(socket) {
 
     socket.on('chatBoxUpdateOnUserChange', function(ids) {
         Message.find({senderId: {$in: [ids.userId, ids.recieverId]}, recieverId: {$in: [ids.userId, ids.recieverId]}}).then(function(messages) {
+            console.log(messages)
             socket.emit('chatboxMessagesOnUserChange', messages);
         })
+    })
+
+    socket.on('seenMessagesUpadate', function(ids) {
+
+        Message.updateMany({senderId: ids.senderId, recieverId: ids.recieverId, isSeen: false},{$set:{isSeen: true}})
+        .then((updatedMessages)=>{
+            
+            var userListForReciever = [];
+            User.find({}, async function(err, users) {
+                await new Promise(async function(resolve) {
+                    for(let i = 0; i < users.length; ++i) {
+                        if(users[i]._id != ids.senderId) {
+                            await Message.find({senderId: {$in: [users[i]._id, ids.senderId]}, recieverId: {$in: [users[i]._id, ids.senderId]}}).then(function(messages){
+                                
+                                let index = messages.length - 1;
+                                if (messages[index].senderId == ids.senderId) {
+                                    lastMsgIsYours = true;
+                                    isRead = false;
+
+                                } else {
+                                    lastMsgIsYours = false;
+
+                                    if(messages[index].isSeen) {
+                                        isRead = true;
+
+                                    } else {
+                                        isRead = false;
+
+                                    }
+                                }
+
+                                userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: lastMsgIsYours, lastMsgTime: messages[index].messageTime, isSeen: messages[index].isSeen, isRead: isRead, messageType: messages[index].messageType, lastMsg: messages[index].message});
+                                
+                            }).catch(function(err) {
+                                
+                                userListForReciever.push({userId: users[i]._id, name: users[i].name, isActive: users[i].isActive, lastMsgIsYours: false, lastMsgTime: "", isSeen: false, isRead: false, messageType: "", lastMsg: ""});
+                            })
+                        }
+                    }
+
+                    resolve();
+                });
+                
+                if(userSockets[ids.senderId]) {
+                    userSockets[ids.senderId].emit('userlistUpdate', userListForReciever);
+                }
+            })
+
+        }).catch((err)=>{
+            
+        })
+    })
+
+    socket.on('chatBoxSeenMessageUpdate', function(senderId) {
+        if(userSockets[senderId]) {
+            userSockets[senderId].emit('chatBoxSeenMessageUpdateToSender');
+        }
     })
 
     socket.on('disconnect', function() {
