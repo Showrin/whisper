@@ -12,6 +12,17 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
+    <div class="dimmer"></div>
+    <div class="modal">
+      <div class="modal_title">File Upload </div>
+      <div class="divider"></div>
+      <div class="modal_text">
+        <form id="js_fileShare_form" action="/shareFile" method="POST" encType="multipart/form-data">
+          <input id="js_file_share_input" type="file" name="sharedFile">
+        </form>
+      </div>
+      <button class="modal_btn--close modal_btn--red" id="js_file_share_btn">Upload</button>
+    </div>
     <div class="navbar">
       <div class="navbar_userlist-portion"><img class="navbar_logo" src="/images/icons/logo-color.svg" alt="Whisper">
         <div class="icon-container"><img class="icon-container_icon" src="/images/icons/gear.svg"></div>

@@ -61,6 +61,26 @@ button:active {
     transform: translateY(1px);
 }
 
+.label-btn {
+    color: $primary-color;
+    padding: .8vw 5vw .8vw  5vw;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-top: 2.5vw;
+    margin-bottom: .5vw;
+    box-shadow: $shadow;
+    cursor: pointer;
+    transition: transform .2s ease-in-out;
+}
+.label-btn:hover {
+    transform: scale(1.05);
+}
+.label-btn:active {
+    transform: translateY(1px);
+}
+
 a {
     text-decoration: none;
     color: #fff;
@@ -563,6 +583,12 @@ label {
     border-bottom-left-radius: 30px;
     transition: all .2s ease-in-out;
 }
+.file_msg {
+    padding: 3vw 6vw;
+    font-size: 3vw;
+    border-radius: 10px;
+    cursor: pointer;
+}
 .frnds_msg {
     background-color: $lighter-gray-color;
     color: $black-color;
@@ -609,6 +635,11 @@ label {
     font-size: .9vw !important;
     border-radius: 30px;
     height: 2.5vw !important;
+}
+
+#js_file_share_input {
+    height: auto;
+    background-color: $primary-color;
 }
 
 

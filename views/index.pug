@@ -8,6 +8,17 @@ block content
     - var nameOfWhomToChat = userlist[0].name
     - var isActive = userlist[0].isActive
 
+    .dimmer
+
+    .modal
+        .modal_title File Upload 
+        .divider
+        .modal_text
+            form#js_fileShare_form(action="/shareFile", method="POST", encType="multipart/form-data")
+                input#js_file_share_input(type="file", name="sharedFile")
+
+        button#js_file_share_btn.modal_btn--close.modal_btn--red Upload
+
     include navbar.pug
 
     include userlist.pug

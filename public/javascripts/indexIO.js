@@ -110,11 +110,48 @@ function initialUpdateUserlist(userList) {
     });
 }
 
+// file upload modal opening
+
+$('#js_chatbox_sendfile-btn').click(function() {
+
+    openLoginErrorModal();
+})
+
+// file share form submit
+$('#js_file_share_btn').click(function() {
+
+    if ($('#js_file_share_input').val() != '') {
+        $('#js_fileShare_form').submit();
+
+        var recieverId = $('.navbar_chatbox-portion_user-details').attr('id');
+
+        socket.emit('saveMessageInServerDB', {selfUserId: userId, recieverId, messageType: 'file', sentMessage: doEncryption('File')});
+    }
+})
+
+// active user update
+socket.on('activeUserUpdate', function(userId) {
+    $($(`*[data-userid="${userId}"]`).find('.inactive_user_indicator')).addClass('is-active_indicator');
+    $($(`*[data-userid="${userId}"]`).find('.inactive_user_indicator')).removeClass('inactive_user_indicator');
+})
+
+// inactive user update
+socket.on('inactiveUserUpdate', function(userId) {
+    $($(`*[data-userid="${userId}"]`).find('.is-active_indicator')).addClass('inactive_user_indicator');
+    $($(`*[data-userid="${userId}"]`).find('.is-active_indicator')).removeClass('is-active_indicator');
+})
+
+
 // initial chatbox update (loding message)
 socket.on('initialChatboxMessages', function(messages) {
     messages.forEach(function(messageInfo) {
         loadMessage(messageInfo);
     })
+})
+
+// logout event
+$('#js_logout_btn').click(function() {
+    socket.emit('logout', userId);
 })
 
 
@@ -259,12 +296,19 @@ $('#js_user_info_btn').click(function() {
 
 // message loading function
 function loadMessage(messageInfo) {
-    var seenIndicator;
+    var seenIndicator, fileClass;
     var messageTime = moment(messageInfo.messageTime.toString()).format('hh:mm a');
     var message = doDecryption(messageInfo.message);
     var messageId = messageInfo._id;
 
     if(messageInfo.senderId == userId) {
+
+        if(messageInfo.messageType == 'file') {
+            fileClass = 'file_msg';
+        } else {
+            fileClass = '';
+        }
+        console.log(fileClass)
         
         if(messageInfo.isSeen) {
             seenIndicator = `<img class="js_chatBox_seen_indicator seen_indicator" src="/images/icons/seen.svg">`;
@@ -272,10 +316,17 @@ function loadMessage(messageInfo) {
             seenIndicator = `<img class="js_chatBox_seen_indicator not-seen_indicator" src="/images/icons/not_seen.svg">`;
         }
 
-        var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
+        var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
 
     } else {
-        var messageDiv = `<div class="chatbox_msgbox frnds_msgbox" id="${messageId}"><div class="chatbox_msg frnds_msg">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
+
+        if(messageInfo.messageType == 'file') {
+            flieClass = 'file_msg';
+        } else {
+            flieClass = '';
+        }
+
+        var messageDiv = `<div class="chatbox_msgbox frnds_msgbox" id="${messageId}"><div class="chatbox_msg frnds_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
     }
 
     $('#js_chatbox').append(messageDiv);

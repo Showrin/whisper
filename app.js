@@ -65,6 +65,18 @@ app.post('/signup_completion', function(req, res) {
     })
 });
 
+app.post('/shareFile', function(req, res) {
+    let sharedFile = req.files.sharedFile;
+
+    sharedFile.mv(path.join(__dirname, '/public/images/sharedFilse/') + sharedFile.name, function(err) {
+        if (err) {
+            
+        } else {
+            res.redirect('/')
+        }
+    })
+})
+
 app.post('/signincheck', function(req, res) {
     email = req.body.email;
     
@@ -131,18 +143,6 @@ var msgSchema = mongoose.Schema({
 var User = mongoose.model('users', userSchema); 
 var Message = mongoose.model('personal_messages', msgSchema);
 
-// var newMsg = new Message({senderId: "5d6f05fb1004e43b14321d11", recieverId: "5d6e69e01004e43b14321d0f", message: "Hi.... What do you do?", messageType: "message", isSeen: false, deletedForSender: true, deletedForReciever: true});
-
-// newMsg.save(function() {
-//     setTimeout(() => {
-        
-//     }, 1000);
-// });
-
-// var newMsg = new Message({senderId: "5d6e69e01004e43b14321d0f", recieverId: "5d6f05fb1004e43b14321d11", message: "Thinking about life...", messageType: "message", isSeen: false, deletedForSender: true, deletedForReciever: true});
-
-// newMsg.save();
-
 
 // ############ Socket Programs ####################
 var userSockets = {};
@@ -186,7 +186,12 @@ io.on('connection', function(socket) {
     })
 
     socket.on('saveSocket', function(userId) {
+        socket.userId = userId;
         userSockets[userId] = socket;
+        User.updateMany({_id: userId},{$set:{isActive: true}}).then(function() {
+            io.sockets.emit('activeUserUpdate', userId);
+        })
+
     })
 
     socket.on('fetchInitialUpdateOnPageLoad', function(userId) {
@@ -409,7 +414,18 @@ io.on('connection', function(socket) {
         }
     })
 
+    socket.on('logout', function(userId) {
+        
+        User.updateMany({_id: userId},{$set:{isActive: false}}).then(function() {
+            io.sockets.emit('inactiveUserUpdate', userId);
+        })
+    })
+
     socket.on('disconnect', function() {
+        
+        User.updateMany({_id: socket.userId},{$set:{isActive: false}}).then(function() {
+            io.sockets.emit('inactiveUserUpdate', socket.userId);
+        })
         console.log('disconnected');
         
     })
