@@ -586,7 +586,7 @@ label {
 .file_msg {
     padding: 3vw 6vw;
     font-size: 3vw;
-    border-radius: 10px;
+    border-radius: 10px !important;
     cursor: pointer;
 }
 .frnds_msg {
@@ -608,10 +608,10 @@ label {
     transform: scale(0);
 }
 .frnds_msg-icon-container {
-    margin-left: auto;
+    margin-left: 3vw;
 }
 .own_msg-icon-container {
-    margin-right: auto;
+    margin-right: 3vw;
 }
 
 .chatbox_sendmsg-form {
