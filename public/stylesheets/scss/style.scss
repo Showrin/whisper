@@ -383,6 +383,7 @@ label {
         .user_name {
             font-family: 'muli-bold';
             padding-bottom: .2vw;
+            text-transform: capitalize;
         }
 
         .is-active_status {
@@ -464,6 +465,7 @@ label {
     line-height: 1.5vw;
     padding-right: .5vw;
     box-sizing: border-box;
+    text-transform: capitalize;
 }
 
 .user_name {
@@ -681,6 +683,7 @@ label {
         line-height: initial !important;
         padding-top: 1vw;
         padding-bottom: 4.5vw;
+        text-transform: capitalize;
     }
 }
 

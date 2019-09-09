@@ -24,7 +24,7 @@ function initialUpdateUserlist(userList) {
     userList.sort((a, b) => (a.lastMsgTime > b.lastMsgTime) ? -1 : 1);
 
     userList.forEach((user, index) => {
-        let name = user.name;
+        let name = user.name.toLowerCase();
         let lastMsgTime;
         let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '', activeTabClass = '';
         
@@ -76,14 +76,14 @@ function initialUpdateUserlist(userList) {
         }
 
         //initial userlist update
-        let userDiv = `<div class='user ${activeTabClass}' data-userid="${user.userId}" data-name="${user.name}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
+        let userDiv = `<div class='user ${activeTabClass}' data-userid="${user.userId}" data-name="${user.name.toLowerCase()}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name.toLowerCase()}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
 
         $('#userlist').append(userDiv);
 
         if (index == 0) {
             //initial navbar update
             $('#js_navbar_profile_pic').attr('src', `/images/propics/${user.userId}.jpg`);
-            $('#js_navbar_profile_name').text(user.name);
+            $('#js_navbar_profile_name').text(user.name.toLowerCase());
             $('.navbar_chatbox-portion_user-details').attr('id', user.userId)
     
             if(user.isActive) {
@@ -94,7 +94,7 @@ function initialUpdateUserlist(userList) {
 
             // initial info page update
             $('#js_info_pic').attr('src', `/images/propics/${user.userId}.jpg`);
-            $('#js_info_name').text(user.name);
+            $('#js_info_name').text(user.name.toLowerCase());
 
             // initial chatbox update (request for message)
             let senderId = userId;
@@ -173,12 +173,12 @@ $('#userlist').on('click', '.user', function() {
 
     // changes in Info list
     $('#js_info_pic').attr('src', userPicSrc);
-    $('#js_info_name').text(userName);
+    $('#js_info_name').text(userName.toLowerCase());
 
     // changes in navbar
     $('#js_navbar_profile_pic').attr('src', userPicSrc);
     $('#js_navbar_profile_pic').attr('alt', userName);
-    $('#js_navbar_profile_name').text(userName);
+    $('#js_navbar_profile_name').text(userName.toLowerCase());
     $('.navbar_chatbox-portion_user-details').attr('id', recieverId)
 
     if (userActiveStatus == "true") {
@@ -221,7 +221,7 @@ function updateUserList(userList) {
     userList.sort((a, b) => (a.lastMsgTime > b.lastMsgTime) ? -1 : 1);
 
     userList.forEach((user, index) => {
-        let name = user.name;
+        let name = user.name.toLowerCase();
         let lastMsgTime;
         let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '';
 
@@ -267,7 +267,7 @@ function updateUserList(userList) {
         }
 
         //initial userlist update
-        let userDiv = `<div class='user' data-userid="${user.userId}" data-name="${user.name}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
+        let userDiv = `<div class='user' data-userid="${user.userId}" data-name="${user.name.toLowerCase()}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name.toLowerCase()}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
 
         $('#userlist').append(userDiv);
 
