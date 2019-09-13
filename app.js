@@ -430,7 +430,7 @@ io.on('connection', function(socket) {
     var uploader = new SocketIOFile(socket, {
         uploadDir: 'public/sharedFiles',							// simple directory
         accepts: [],
-        chunkSize: 10240,							// default is 10240(1KB)
+        chunkSize: 102400,							// default is 10240(1KB)
         transmissionDelay: 0,						// delay of each transmission, higher value saves more cpu resources, lower upload speed. default is 0(no delay)
         overwrite: false
     });
