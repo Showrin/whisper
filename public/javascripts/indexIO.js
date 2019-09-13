@@ -35,7 +35,12 @@ function initialUpdateUserlist(userList) {
         }
 
         if(user.lastMsgIsYours) {
-            message = `You: ${doDecryption(user.lastMsg)}`;
+
+            if (user.messageType == "file") {
+                message = 'You: File';
+            } else {
+                message = `You: ${doDecryption(user.lastMsg)}`;
+            }
             
             if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
                 lastMsgTimeStyle = `style="opacity: 1;"`
@@ -44,7 +49,12 @@ function initialUpdateUserlist(userList) {
             }
             
         } else {
-            message = `${doDecryption(user.lastMsg)}`;
+
+            if (user.messageType == "file") {
+                message = 'You: File';
+            } else {
+                message = `${doDecryption(user.lastMsg)}`;
+            }
 
             lastMsgTimeStyle = `style="opacity: 0;"`
 
@@ -74,6 +84,8 @@ function initialUpdateUserlist(userList) {
         } else {
             lastMsgTime = "";
         }
+
+        console.log(userList)
 
         //initial userlist update
         let userDiv = `<div class='user ${activeTabClass}' data-userid="${user.userId}" data-name="${user.name.toLowerCase()}" data-is-active="${user.isActive}"><div class='user_pic-container'><img src='/images/propics/${user.userId}.jpg'></div><div class="user_info-container"><span class="user_name ${isReadClass}">${name.toLowerCase()}<span class="${isActiveClass}"></span></span><span class="user_msg ${isReadClass}">${message}</span></div><div class="user_confirmation-time-container"><span><img class="${isSeenClass}" ${lastMsgTimeStyle} src="/images/icons/${isSeenImgSrc}"></span><span class="msg_time"> <span class="circle" ${lastMsgTimeStyle}></span>${lastMsgTime}</span></div>`;
@@ -117,17 +129,70 @@ $('#js_chatbox_sendfile-btn').click(function() {
     openLoginErrorModal();
 })
 
-// file share form submit
-$('#js_file_share_btn').click(function() {
+// sharing files
+var uploader = new SocketIOFileClient(socket);
+var form = $('#js_fileShare_form');
+var sentMessage, messageId, fileName, fileNameArray;
+ 
+uploader.on('start', function(fileInfo) {
+    console.log('Start uploading', fileInfo);
+});
 
-    if ($('#js_file_share_input').val() != '') {
-        $('#js_fileShare_form').submit();
+uploader.on('stream', function(fileInfo) {
+    console.log('Streaming... sent ' + fileInfo.sent + ' bytes.');
+    let uploadPercentage = (fileInfo.sent / fileInfo.size) * 100;
 
-        var recieverId = $('.navbar_chatbox-portion_user-details').attr('id');
+    $('#js_file_upload_progress_bar').css('width', `${uploadPercentage}%`);
+});
 
-        socket.emit('saveMessageInServerDB', {selfUserId: userId, recieverId, messageType: 'file', sentMessage: doEncryption('File')});
-    }
-})
+uploader.on('complete', function(fileInfo) {
+    console.log('Upload Complete', fileInfo);
+
+    let recieverId = $('.navbar_chatbox-portion_user-details').attr('id');
+    let selfUserId = $('.navbar').attr('id');
+    let messageType = 'file';
+    
+    $('#js_file_upload_progress_bar').css('width', `100%`);
+    setTimeout(() => {
+        $(`#${messageId}`).remove();
+
+        if(sentMessage != "") {
+            sentMessage = doEncryption(sentMessage);
+            socket.emit('saveMessageInServerDB', {messageId, selfUserId, recieverId, messageType, sentMessage});
+        }
+    }, 500);
+
+    $('#js_file_share_input').val('');
+});
+ 
+form.submit(function(e) {
+    e.preventDefault();
+
+    let recieverId = $('.navbar_chatbox-portion_user-details').attr('id');
+    let selfUserId = $('.navbar').attr('id');
+    fileNameArray = $('#js_file_share_input').val().split(`\\`);
+    fileName = fileNameArray[fileNameArray.length - 1];
+    sentMessage = `${selfUserId}---${recieverId}---${Date.now()}---` + fileName;
+    messageId = sentMessage.replace(/ /g, "").replace(/---/g, "").replace(/-/g, "").replace(/\./g, "").replace(/\(/g, "").replace(/\)/g, "").replace(/\{/g, "").replace(/\}/g, "").replace(/\[/g, "").replace(/\]/g, "");
+    let messageType = 'file';
+
+    var sharedFile = document.getElementById('js_file_share_input');
+    var uploadIds = uploader.upload(sharedFile, sentMessage);
+
+    var messageTime = moment(Date.now()).format('hh:mm a');
+
+    fileClass = 'file_msg';
+        
+    seenIndicator = `<img class="js_chatBox_seen_indicator not-seen_indicator" src="/images/icons/not_sent.svg">`;
+
+    var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg ${fileClass}"><div>${fileName}</div><div class="progress_bar_wrapper"><div id="js_file_upload_progress_bar" class="progress_bar"></div></div></div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
+
+    $('#js_chatbox').append(messageDiv);
+
+    $('#js_chatbox').stop().animate({
+        scrollTop: $("#js_chatbox")[0].scrollHeight
+    }, 800);
+});
 
 // active user update
 socket.on('activeUserUpdate', function(userId) {
@@ -226,7 +291,12 @@ function updateUserList(userList) {
         let message, isReadClass = '', isActiveClass = '', isSeenClass = '', isSeenImgSrc = '';
 
         if(user.lastMsgIsYours) {
-            message = `You: ${doDecryption(user.lastMsg)}`;
+
+            if (user.messageType == "file") {
+                message = 'You: File';
+            } else {
+                message = `You: ${doDecryption(user.lastMsg)}`;
+            }
             
             if (user.lastMsgTime != "1970-01-01T22:21:55.984Z") {
                 lastMsgTimeStyle = `style="opacity: 1;"`
@@ -235,8 +305,13 @@ function updateUserList(userList) {
             }
             
         } else {
-            message = `${doDecryption(user.lastMsg)}`;
-            
+
+            if (user.messageType == "file") {
+                message = 'You: File';
+            } else {
+                message = `${doDecryption(user.lastMsg)}`;
+            }
+
             lastMsgTimeStyle = `style="opacity: 0;"`
 
             if(user.isRead || message == "") {
@@ -296,13 +371,19 @@ $('#js_user_info_btn').click(function() {
 
 // message loading function
 function loadMessage(messageInfo) {
-    var seenIndicator, fileClass;
+    var seenIndicator, fileClass, downloadClass = '', filePicShow = '';
     var messageTime = moment(messageInfo.messageTime.toString()).format('hh:mm a');
     var message = doDecryption(messageInfo.message);
+    var fileDownloadLink = message;
     var messageId = messageInfo._id;
 
     if(messageInfo.messageType == 'file') {
         fileClass = 'file_msg';
+        message = message.split('---');
+        message = message[message.length - 1];
+        fileDownloadLink = fileDownloadLink.replace(/ /g, "%20");
+        downloadClass = `<a href="/download/${fileDownloadLink}" class="icon-container file_download_icon"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/download.svg"></a href="">`;
+        filePicShow = `background-image: url(./sharedFiles/${fileDownloadLink})`;
     } else {
         fileClass = '';
     }
@@ -315,11 +396,11 @@ function loadMessage(messageInfo) {
             seenIndicator = `<img class="js_chatBox_seen_indicator not-seen_indicator" src="/images/icons/not_seen.svg">`;
         }
 
-        var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
+        var messageDiv = `<div class="chatbox_msgbox own_msgbox" id="${messageId}"><span>${seenIndicator}</span><div class="chatbox_msg own_msg ${fileClass}" style="${filePicShow}">${message} ${downloadClass}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container own_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
 
     } else {
 
-        var messageDiv = `<div class="chatbox_msgbox frnds_msgbox" id="${messageId}"><div class="chatbox_msg frnds_msg ${fileClass}">${message}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
+        var messageDiv = `<div class="chatbox_msgbox frnds_msgbox" id="${messageId}"><div class="chatbox_msg frnds_msg ${fileClass}" style="${filePicShow}">${message} ${downloadClass}</div><div class="chatbox_msg-time">${messageTime}</div><div class="icon-container frnds_msg-icon-container"><img class="icon-container_icon chatbox_remove-icon" src="/images/icons/garbage.svg"></div></div>`;
     }
 
     $('#js_chatbox').append(messageDiv);
@@ -391,5 +472,7 @@ function doDecryption(messageToDecrypt, key = "5d6f05fb1004e43b14321d11") {
     var decryptedMessage = CryptoJS.AES.decrypt(messageToDecrypt, key).toString(CryptoJS.enc.Utf8);
     return decryptedMessage;
 }
+
+
 
 

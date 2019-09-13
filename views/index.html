@@ -17,11 +17,11 @@
       <div class="modal_title">File Upload </div>
       <div class="divider"></div>
       <div class="modal_text">
-        <form id="js_fileShare_form" action="/shareFile" method="POST" encType="multipart/form-data">
-          <input id="js_file_share_input" type="file" name="sharedFile">
+        <form id="js_fileShare_form">
+          <input id="js_file_share_input" type="file">
+          <input class="modal_btn--close modal_btn--red" id="js_file_share_btn" type="submit" value="Upload">
         </form>
       </div>
-      <button class="modal_btn--close modal_btn--red" id="js_file_share_btn">Upload</button>
     </div>
     <div class="navbar">
       <div class="navbar_userlist-portion"><img class="navbar_logo" src="/images/icons/logo-color.svg" alt="Whisper">
@@ -58,6 +58,7 @@
       <div class="divider top-margin"></div>
       <div class="infobox_title">Links</div><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a><a class="infobox_option link" href=""> <span>Link</span></a>
     </div>
+    <script src="/socket.io-file-client.js"></script>
     <script src="../javascripts/script.js"></script>
     <script src="../javascripts/indexIO.js"></script>
     <script src="../javascripts/moment.min.js"></script>

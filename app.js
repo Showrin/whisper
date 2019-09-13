@@ -7,6 +7,7 @@ var socket_io = require('socket.io');
 var mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const session = require('express-session');
+const SocketIOFile = require('socket.io-file');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -29,6 +30,27 @@ app.use(fileUpload());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+
+ // ############################### Routing for sharedFile get method ##################################
+app.get('/socket.io-file-client.js', (req, res, next) => {
+    return res.sendFile(__dirname + '/node_modules/socket.io-file-client/socket.io-file-client.js');
+});
+
+// define a route to download shared file 
+app.get('/download/:file(*)',(req, res) => {
+
+    var userSession = req.session;
+
+    if(userSession.userId) {
+        var file = req.params.file;
+        var fileLocation = path.join('./public/sharedFiles',file);
+        console.log(fileLocation);
+        res.download(fileLocation, file);
+    } else {
+        return res.redirect('/signin');
+    } 
+});
 
 
 // ############################### Routing for all post methods ##################################
@@ -64,18 +86,6 @@ app.post('/signup_completion', function(req, res) {
         })    
     })
 });
-
-app.post('/shareFile', function(req, res) {
-    let sharedFile = req.files.sharedFile;
-
-    sharedFile.mv(path.join(__dirname, '/public/images/sharedFilse/') + sharedFile.name, function(err) {
-        if (err) {
-            
-        } else {
-            res.redirect('/')
-        }
-    })
-})
 
 app.post('/signincheck', function(req, res) {
     email = req.body.email;
@@ -143,6 +153,9 @@ var msgSchema = mongoose.Schema({
 var User = mongoose.model('users', userSchema); 
 var Message = mongoose.model('personal_messages', msgSchema);
 
+// Message.deleteMany({messageType: 'file'}, function(err, data) {
+//     console.log(data)
+// })
 
 // ############ Socket Programs ####################
 var userSockets = {};
@@ -413,6 +426,14 @@ io.on('connection', function(socket) {
             userSockets[senderId].emit('chatBoxSeenMessageUpdateToSender');
         }
     })
+
+    var uploader = new SocketIOFile(socket, {
+        uploadDir: 'public/sharedFiles',							// simple directory
+        accepts: [],
+        chunkSize: 10240,							// default is 10240(1KB)
+        transmissionDelay: 0,						// delay of each transmission, higher value saves more cpu resources, lower upload speed. default is 0(no delay)
+        overwrite: false
+    });
 
     socket.on('logout', function(userId) {
         

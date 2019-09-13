@@ -2,22 +2,16 @@ extends layout
 
 block content
 
-    - var userlist = [{ userId: 1, name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: false, isRead: true, msgType: "file", lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 2, emailId: "showrin@gmail.com", name: "Showrin Barua", isActive: false, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: true, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: false, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: false, lastMsgTime: "12.03am", isSeen: true, isRead: true, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: false, lastMsgTime: "12.03am", isSeen: true, isRead: true, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: false, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."},{ userId: 1, emailId: "nafisa@gmail.com", name: "Nafisa Tasneem", isActive: true, lastMsgIsYours: true, lastMsgTime: "12.03am", isSeen: true, isRead: false, lastMsg: "Hey hello... How are you? I am fine..."}];
-
-    - var picSrcOfWhomToChat = "/images/propics/"+userlist[0].userId+".jpg"
-    - var nameOfWhomToChat = userlist[0].name
-    - var isActive = userlist[0].isActive
-
     .dimmer
 
     .modal
         .modal_title File Upload 
         .divider
         .modal_text
-            form#js_fileShare_form(action="/shareFile", method="POST", encType="multipart/form-data")
-                input#js_file_share_input(type="file", name="sharedFile")
+            form#js_fileShare_form
+                input#js_file_share_input(type="file")
 
-        button#js_file_share_btn.modal_btn--close.modal_btn--red Upload
+                input#js_file_share_btn.modal_btn--close.modal_btn--red(type="submit", value="Upload")
 
     include navbar.pug
 
@@ -28,6 +22,7 @@ block content
     include info.pug
 
 block scripts
+    script(src="/socket.io-file-client.js")
     script(src="../javascripts/script.js")
     script(src="../javascripts/indexIO.js")
     script(src="../javascripts/moment.min.js")

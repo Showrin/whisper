@@ -545,6 +545,7 @@ label {
     align-items: center;
     width: 100%;
     padding: .2vw 0px;
+    transition: all .3s ease-out;
 }
 .chatbox_msgbox:hover {
     .frnds_msg-icon-container,
@@ -587,10 +588,29 @@ label {
 }
 .file_msg {
     padding: 3vw 6vw;
-    font-size: 3vw;
+    font-size: 1vw;
     border-radius: 10px !important;
-    cursor: pointer;
+    background-color: transparent !important;
+    border: 1px solid $lighter-gray-color;
+    color: $primary-color;
+    max-width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-size: cover;
+    background-position: center center;
 }
+
+.file_download_icon {
+    margin-top: 2vw;
+    
+    img {
+        width: 2.5vw;
+        height: 2.5vw;
+    }
+}
+
 .frnds_msg {
     background-color: $lighter-gray-color;
     color: $black-color;
@@ -737,6 +757,28 @@ label {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+
+// ######### file uploading progress configuration #############
+.progress_bar_wrapper {
+    width: 100%;
+    background-color: $lighter-gray-color;
+    height: 3px;
+    margin-top: 3vw;
+    border-radius: 100px;
+    position: relative;
+}
+
+.progress_bar {
+    border-radius: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background-color: $primary-color;
+    transition: all .2s ease-out;
 }
 
 
