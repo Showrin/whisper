@@ -10,3 +10,5 @@
 {"_id":{"$oid":"5d763645d0ed8a3c90410a2a"},"blocklist":[],"name":"Minhaz Arnab","email":"arnab0520@gmail.com","password":"U2FsdGVkX1+DTjcGC/6DDx69fuaqPmDO/JdJs01mDL8=","isActive":false,"__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"5d7639d7d0ed8a3c90410a30"},"blocklist":[],"name":"ANKON ARGHO","email":"ankonghosh22@gmail.com","password":"U2FsdGVkX1+XI3u4vB2oeUn6NVxZoAWA28D1puO7pzY=","isActive":false,"__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"5d767003d0ed8a3c90410a3e"},"blocklist":[],"name":"Pranta bhowmik","email":"prantabhowmik2006@gmail.com","password":"U2FsdGVkX1+iipYrUnSU1hK62hqwM8fgB8jrI8udsi8=","isActive":false,"__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5d7a14763a43101de8bfffa4"},"blocklist":[],"name":"dipayan","email":"dipayan1109033@gmail.com","password":"U2FsdGVkX1+oGqYV+yDAFesBdvokrQQbFhZ79LGaQl8=","isActive":false,"__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5d7b30aaec2f740284df8839"},"blocklist":[],"name":"Mrinmoy","email":"mrinmoyroykuet@gmail.com","password":"U2FsdGVkX19vfNt24oLTgOxZa6l0KPtqz3zYfUemhpc=","isActive":false,"__v":{"$numberInt":"0"}}
